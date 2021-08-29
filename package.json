@@ -4,8 +4,8 @@
   "description": "Social Media WebSite",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --mode development ./DevOlogy/frontend/src/index.js -o ./DevOlogy/frontend/static/frontend/main.js",
-    "build": "webpack --mode production ./DevOlogy/frontend/src/index.js -o ./DevOlogy/frontend/static/frontend/main.js"
+    "dev": "webpack --mode development --watch ./DevOlogy/frontend/src/index.js -o ./DevOlogy/frontend/static/frontend/.",
+    "build": "webpack --mode production ./DevOlogy/frontend/src/index.js -o ./DevOlogy/frontend/static/frontend/."
   },
   "repository": {
     "type": "git",

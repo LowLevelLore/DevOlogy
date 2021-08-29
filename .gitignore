@@ -8,6 +8,7 @@ __pycache__/
 node_modules/
 media/
 config.json
+main.js
 
 # Distribution / packaging
 .Python
