@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import json
+
+config = json.load(open('config.json'))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-nq@7nqyi+%c7izo8(%f!6rm==609#t9)6e-k9_*1-&8ttt+j*e'
+SECRET_KEY = config['SECRETS']['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,12 +35,18 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # DEFAULT APPS
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # WEBSITE CUSTOM APPS
+    'authentication',
+    'core',
+    # THIRD PARTY APPS
+    'rest_framework',    
 ]
 
 MIDDLEWARE = [
@@ -74,11 +84,14 @@ WSGI_APPLICATION = 'DevOlogy.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'DevOlogy',
+        'CLIENT': {
+           'host': config['SECRETS']['HOST'],
+        }
     }
-}
+   }
 
 
 # Password validation
@@ -123,3 +136,22 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = '/auth/login'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static', 'core', 'user']
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+WEBSITE_NAME = 'DevOlogy'
+WEBSITE_DOMAIN = '127.0.0.1:8000'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config['SECRETS']['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = config['SECRETS']['EMAIL_HOST_PASSWORD']
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/core/login'
