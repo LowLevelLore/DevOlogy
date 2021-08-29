@@ -8,6 +8,8 @@ django = "*"
 djangorestframework = "*"
 pillow = "*"
 djongo = "*"
+pymongo = "*"
+dnspython = "*"
 
 [dev-packages]
 

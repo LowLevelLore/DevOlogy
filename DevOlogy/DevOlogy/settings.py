@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import json
 
+
 config = json.load(open('config.json'))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,9 +43,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     # WEBSITE CUSTOM APPS
     'authentication',
     'core',
+    'frontend',
+    'api',
+
     # THIRD PARTY APPS
     'rest_framework',    
 ]

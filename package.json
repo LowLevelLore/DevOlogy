@@ -4,7 +4,8 @@
   "description": "Social Media WebSite",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack --mode development ./DevOlogy/frontend/src/index.js --output ./DevOlogy/frontend/static/frontend/main.js",
+    "build": "webpack --mode production ./DevOlogy/frontend/src/index.js --output ./DevOlogy/frontend/static/frontend/main.js"
   },
   "repository": {
     "type": "git",
@@ -27,5 +28,9 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "webpack": "^5.51.1",
     "webpack-cli": "^4.8.0"
+  },
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   }
 }
