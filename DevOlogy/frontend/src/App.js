@@ -16,7 +16,10 @@ class App extends Component {
     this.knowIfLoggedIn();
   }
   async knowIfLoggedIn() {
-    await fetch("api/isLoggedIn")
+    await fetch("/api/isLoggedIn", {
+      headers:{
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest', }})
       .then((response) => {
         return response.json();
       })
@@ -54,7 +57,7 @@ class App extends Component {
                   <Login />
                 </Route>
                 <Route path="/post">
-                  <Post />
+                  <Login/>
                 </Route>
                 <Route path="/signin">
                   <SignIn />
