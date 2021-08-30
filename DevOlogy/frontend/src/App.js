@@ -8,7 +8,7 @@ import Post from "./Pages/Post/Post";
 import Profile from "./Pages/Profile/Profile";
 import SignIn from "./Pages/SignInPage/SignIn";
 
-import "../static/css/App.css";
+import "./App.css";
 
 class App extends Component {
   constructor() {
