@@ -10,6 +10,8 @@ pillow = "*"
 djongo = "*"
 pymongo = "*"
 dnspython = "*"
+django-crum = "*"
+django-currentuser = "*"
 
 [dev-packages]
 

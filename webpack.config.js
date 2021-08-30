@@ -5,6 +5,7 @@ module.exports = {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 use: {
+                    devtool: 'eval-source-map',
                     loader: "babel-loader",
                 }
             }
