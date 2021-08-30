@@ -39,6 +39,9 @@ class App extends Component {
                 <Route path="/post/:postId">
                   <Post />
                 </Route>
+                <Route path="/profile/:userId">
+                  <Profile />
+                </Route>
               </Switch>
             </div>
           
