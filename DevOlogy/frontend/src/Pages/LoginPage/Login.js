@@ -16,57 +16,71 @@ function getCookie(name) {
   return cookieValue;
 }
 
-const email_placeholder = "Email Or Username"
-const password_placeholder = "Password"
+const email_placeholder = "Email Or Username";
+const password_placeholder = "Password";
 
 export default class Login extends Component {
   constructor() {
     super();
-    this.state = { username_email: "", password: "" , email_placeholder: email_placeholder, password_placeholder: password_placeholder, isUserNameValid: true, isPasswordValid: true, disableLoginButton: true};
+    this.state = {
+      username_email: "",
+      password: "",
+      email_placeholder: email_placeholder,
+      password_placeholder: password_placeholder,
+      isUserNameValid: true,
+      isPasswordValid: true,
+      disableLoginButton: true,
+    };
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.isDataValid = this.isDataValid.bind(this);
   }
-  handleUsernameChange(e){
-      this.setState({username_email: e.target.value}, ()=>{
-        this.setState({isUserNameValid: true}) 
-      })
-         
+  handleUsernameChange(e) {
+    this.setState({ username_email: e.target.value }, () => {
+      this.setState({ isUserNameValid: true });
+    });
   }
-  handlePasswordChange(e){
-      this.setState({password: e.target.value}, ()=>{
-        if (! this.isDataValid()){
-          this.setState({isPasswordValid: false});
+  handlePasswordChange(e) {
+    this.setState({ password: e.target.value }, () => {
+      if (!this.isDataValid()) {
+        this.setState({ isPasswordValid: false });
       }
-      })
+    });
   }
-  isDataValid(){
-      if (this.state.password.length >= 8){this.setState({disableLoginButton: false, isPasswordValid: true})}
-      else{this.setState({disableLoginButton: true})}
-      return this.state.password.length >= 8;
-  }
-  handleSubmit(e){
-    if (this.isDataValid()){
-        e.preventDefault();
-    fetch("/login/", {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers:{
-            'Accept': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest', //Necessary to work with request.is_ajax()
-            'X-CSRFToken': getCookie('csrftoken'),
-    }, body: JSON.stringify({username: this.state.username_email, password: this.state.password})}
-    ).then((response) => response.json()).then(data => {
-        if (data.IsLoginSuccessful){
-            window.location.pathname = '/';
-        }
-        else{
-            this.setState({isPasswordValid: false, isUserNameValid: false})
-        }
-    })
+  isDataValid() {
+    if (this.state.password.length >= 8) {
+      this.setState({ disableLoginButton: false, isPasswordValid: true });
+    } else {
+      this.setState({ disableLoginButton: true });
     }
-    
+    return this.state.password.length >= 8;
+  }
+  handleSubmit(e) {
+    if (this.isDataValid()) {
+      e.preventDefault();
+      fetch("/login/", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          Accept: "application/json",
+          "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+        body: JSON.stringify({
+          username: this.state.username_email,
+          password: this.state.password,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.IsLoginSuccessful) {
+            window.location.pathname = "/";
+          } else {
+            this.setState({ isPasswordValid: false, isUserNameValid: false });
+          }
+        });
+    }
   }
   render() {
     return (
@@ -74,18 +88,14 @@ export default class Login extends Component {
         <div className="container">
           <div className="white-box flex-h-center" id="main">
             <div className="container-fluid logo-c flex-h-center">
-              <img
-                id="logo"
-                src="/static/images/written-logo.png"
-                alt=""
-              />
+              <img id="logo" src="/static/images/written-logo.png" alt="" />
             </div>
             <div className="err">
               <span id="err"></span>
             </div>
             <div className="container-fluid form flex-h-center">
               <form
-              onSubmit={this.handleSubmit}
+                onSubmit={this.handleSubmit}
                 method="post"
                 className="container-fluid form flex-h-center"
               >
@@ -99,12 +109,14 @@ export default class Login extends Component {
                     name="username_email"
                     onChange={this.handleUsernameChange}
                     placeholder={this.state.email_placeholder}
-                    className={`form-content validate ${(! this.state.isUserNameValid) ? 'err' : ''}`}
+                    className={`form-content validate ${
+                      !this.state.isUserNameValid ? "err" : ""
+                    }`}
                     onFocus={() => {
-                        this.setState({email_placeholder: ""})
+                      this.setState({ email_placeholder: "" });
                     }}
                     onBlur={() => {
-                        this.setState({email_placeholder: email_placeholder})
+                      this.setState({ email_placeholder: email_placeholder });
                     }}
                   />
                 </div>
@@ -116,12 +128,16 @@ export default class Login extends Component {
                     value={this.state.password}
                     onChange={this.handlePasswordChange}
                     placeholder={this.state.password_placeholder}
-                    className={`form-content validate ${(! this.state.isPasswordValid) ? 'err' : ''}`}
+                    className={`form-content validate ${
+                      !this.state.isPasswordValid ? "err" : ""
+                    }`}
                     onFocus={() => {
-                        this.setState({password_placeholder: ""})
+                      this.setState({ password_placeholder: "" });
                     }}
                     onBlur={() => {
-                        this.setState({password_placeholder: password_placeholder})
+                      this.setState({
+                        password_placeholder: password_placeholder,
+                      });
                     }}
                     id="password"
                   />
@@ -143,7 +159,7 @@ export default class Login extends Component {
                 </div>
                 <div
                   className="col-2 flex-v-center"
-                  style={{textAlign: "center"}}
+                  style={{ textAlign: "center" }}
                 >
                   OR
                 </div>
@@ -163,7 +179,11 @@ export default class Login extends Component {
               </div>
               <div
                 className="container-fluid"
-                style={{textAlign: "right", fontSize: "15px", margin: "10px auto"}}
+                style={{
+                  textAlign: "right",
+                  fontSize: "15px",
+                  margin: "10px auto",
+                }}
               >
                 <a href="/auth/password/reset" className="normalize-link">
                   Forgot Password ?{" "}
@@ -173,7 +193,7 @@ export default class Login extends Component {
           </div>
           <div
             className="white-box flex-h-center"
-            style={{textAlign: "center"}}
+            style={{ textAlign: "center" }}
             id="signup"
           >
             <div>
@@ -181,7 +201,7 @@ export default class Login extends Component {
               <a
                 href="/signup/"
                 className="normalize-link"
-                style={{marginLeft: "8px"}}
+                style={{ marginLeft: "8px" }}
               >
                 Sign Up
               </a>

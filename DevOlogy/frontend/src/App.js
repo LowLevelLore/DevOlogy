@@ -1,6 +1,11 @@
 import ReactDOM from "react-dom";
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 import regeneratorRuntime from "regenerator-runtime";
 import Feed from "./Pages/Feed/Feed";
 import Login from "./Pages/LoginPage/Login";
@@ -17,9 +22,11 @@ class App extends Component {
   }
   async knowIfLoggedIn() {
     await fetch("/api/isLoggedIn", {
-      headers:{
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest', }})
+      headers: {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    })
       .then((response) => {
         return response.json();
       })
@@ -30,42 +37,40 @@ class App extends Component {
 
   render() {
     return (
-        <Router>
-          { this.state.isLoggedIn ? 
-            <div className="content">
-              <Switch>
-                <Route exact path="/">
-                  <Feed />
-                </Route>
-                <Route path="/post/:postId">
-                  <Post />
-                </Route>
-                <Route path="/profile/:userId">
-                  <Profile />
-                </Route>
-              </Switch>
-            </div>
-          
-          :
-          
-            <div className="content">
-              <Switch>
-                <Route exact path="/">
-                  <Login />
-                </Route>
-                <Route exact path="/login">
-                  <Login />
-                </Route>
-                <Route exact path="/post/:postId">
-                  <Login />
-                </Route>
-                <Route exact path="/signup">
-                  <SignUp />
-                </Route>
-              </Switch>
-            </div>
-          }
-        </Router>
+      <Router>
+        {this.state.isLoggedIn ? (
+          <div className="content">
+            <Switch>
+              <Route exact path="/">
+                <Feed />
+              </Route>
+              <Route path="/post/:postId">
+                <Post />
+              </Route>
+              <Route path="/profile/:userId">
+                <Profile />
+              </Route>
+            </Switch>
+          </div>
+        ) : (
+          <div className="content">
+            <Switch>
+              <Route exact path="/">
+                <Login />
+              </Route>
+              <Route exact path="/login">
+                <Login />
+              </Route>
+              <Route exact path="/post/:postId">
+                <Login />
+              </Route>
+              <Route exact path="/signup">
+                <SignUp />
+              </Route>
+            </Switch>
+          </div>
+        )}
+      </Router>
     );
   }
 }
