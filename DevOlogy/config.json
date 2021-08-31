@@ -1,9 +1,0 @@
-{
-    "SECRETS":
-    {
-        "SECRET_KEY": "django-insecure-12eg^1n(!_s@8%=$+u62h8@jhr%zj9s6k2svukrzy_$o_b3qs0",
-        "HOST": "mongodb+srv://MP_1612:om1053049876@devology.bpqvt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-        "EMAIL_HOST_USER": "mihirom105304@gmail.com",
-        "EMAIL_HOST_PASSWORD": "tdwqepdytehwookd"
-    }
-}
