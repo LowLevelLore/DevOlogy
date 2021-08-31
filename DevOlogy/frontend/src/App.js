@@ -20,6 +20,8 @@ class App extends Component {
     this.knowIfLoggedIn = this.knowIfLoggedIn.bind(this);
     this.knowIfLoggedIn();
   }
+
+  // Store in state
   async knowIfLoggedIn() {
     await fetch("/api/isLoggedIn", {
       headers: {

@@ -13,9 +13,6 @@ from django.contrib.auth import views as default_views
 import threading
 import json
 
-# Create your views here.
-
-
 def log_out_view(request):
     if request.method == "POST":
         logout(request)

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./Login.css";
 
+// Just for getting CSRF
 function getCookie(name) {
   var cookieValue = null;
   if (document.cookie && document.cookie !== "") {
