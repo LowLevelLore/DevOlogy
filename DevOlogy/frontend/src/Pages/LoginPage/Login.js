@@ -29,19 +29,22 @@ export default class Login extends Component {
     this.isDataValid = this.isDataValid.bind(this);
   }
   handleUsernameChange(e){
-      this.setState({username_email: e.target.value})
-      this.setState({isUserNameValid: true})    
+      this.setState({username_email: e.target.value}, ()=>{
+        this.setState({isUserNameValid: true}) 
+      })
+         
   }
   handlePasswordChange(e){
-      this.setState({password: e.target.value})
-      if (! this.isDataValid()){
+      this.setState({password: e.target.value}, ()=>{
+        if (! this.isDataValid()){
           this.setState({isPasswordValid: false});
       }
+      })
   }
   isDataValid(){
-      if (this.state.password.length >= 7){this.setState({disableLoginButton: false, isPasswordValid: true})}
+      if (this.state.password.length >= 8){this.setState({disableLoginButton: false, isPasswordValid: true})}
       else{this.setState({disableLoginButton: true})}
-      return this.state.password.length >= 7;
+      return this.state.password.length >= 8;
   }
   handleSubmit(e){
     if (this.isDataValid()){
