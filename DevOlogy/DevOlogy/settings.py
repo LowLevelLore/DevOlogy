@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'api',
 
     # THIRD PARTY APPS
-    'rest_framework',    
+    'rest_framework', 
+    'crispy_forms',   
 ]
 
 MIDDLEWARE = [
@@ -70,7 +71,7 @@ ROOT_URLCONF = 'DevOlogy.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates',],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

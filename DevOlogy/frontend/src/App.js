@@ -6,7 +6,7 @@ import Feed from "./Pages/Feed/Feed";
 import Login from "./Pages/LoginPage/Login";
 import Post from "./Pages/Post/Post";
 import Profile from "./Pages/Profile/Profile";
-import SignIn from "./Pages/SignInPage/SignIn";
+import SignUp from "./Pages/SignUpPage/SignUp";
 
 class App extends Component {
   constructor() {
@@ -34,7 +34,7 @@ class App extends Component {
           { this.state.isLoggedIn ? 
             <div className="content">
               <Switch>
-                <Route exact path="">
+                <Route exact path="/">
                   <Feed />
                 </Route>
                 <Route path="/post/:postId">
@@ -50,17 +50,17 @@ class App extends Component {
           
             <div className="content">
               <Switch>
-                <Route exact path="">
+                <Route exact path="/">
                   <Login />
                 </Route>
-                <Route path="/post/:postId">
+                <Route exact path="/login">
                   <Login />
                 </Route>
-                <Route path="/post">
-                  <Login/>
+                <Route exact path="/post/:postId">
+                  <Login />
                 </Route>
-                <Route path="/signin">
-                  <SignIn />
+                <Route exact path="/signup">
+                  <SignUp />
                 </Route>
               </Switch>
             </div>

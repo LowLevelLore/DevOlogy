@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import (knowIfLoggedIn, loginUser)
+from .views import (knowIfLoggedIn)
 
 urlpatterns = [
     path('isLoggedIn/', knowIfLoggedIn),
-    path('loginUser/', loginUser)
 ]

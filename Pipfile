@@ -12,6 +12,7 @@ pymongo = "*"
 dnspython = "*"
 django-crum = "*"
 django-currentuser = "*"
+django-crispy-forms = "*"
 
 [dev-packages]
 

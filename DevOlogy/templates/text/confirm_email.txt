@@ -1,0 +1,22 @@
+{% autoescape off %}
+
+Hello {{ name }},
+We have recieved a request by your side to sign up to our website DevOlogy,
+
+The sole purpose of this email is to confirm that your email address is a valid email address. 
+You have tried to create an account on our website {{ wb_name }}, the request was made by {{ name }}, 
+the password you have selected is {{ password }}. 
+
+
+You can complete the sign-in process by clicking on the link given below : 
+{{ protocol }}://{{ domain }}{% url 'email_confirmation_view' uidb64=uid token=token %}
+
+NOTE : IF THIS REQUEST WAS NOT MADE BY YOU PLEASE DON'T CLICK ON THE ABOVE LINK, THIS CAN BE A POTENTIAL
+	   IDENTITY THEFT ATTACK, & WE HAVE NOT SPENT A LOT OF RESOURCES ON THE SECURITY OF THIS WEBSITE.... 
+
+	   BE CALM YOUR ACCOUNT WILL ONLY BE CREATED ONCE YOU CLICK ON THE GIVEN LINK .
+
+
+Thank You, 
+		Team {{ wb_name }}
+{% endautoescape %}

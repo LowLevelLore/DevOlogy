@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./Login.css";
-import {Redirect} from "react-router-dom";
 
 function getCookie(name) {
   var cookieValue = null;
@@ -47,7 +46,7 @@ export default class Login extends Component {
   handleSubmit(e){
     if (this.isDataValid()){
         e.preventDefault();
-    fetch("/api/loginUser/", {
+    fetch("/login/", {
         method: 'POST',
         credentials: 'same-origin',
         headers:{
@@ -177,7 +176,7 @@ export default class Login extends Component {
             <div>
               Don't have an Account ?{" "}
               <a
-                href="/auth/emailsignup"
+                href="/signup/"
                 className="normalize-link"
                 style={{marginLeft: "8px"}}
               >
