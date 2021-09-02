@@ -175,7 +175,8 @@ export default class Login extends Component {
                   className="form-content"
                   href="{% url 'social:begin' 'facebook' %}"
                 >
-                  <button className="btn btn-primary">
+                  <button className="btn btn-primary"
+                  disabled={true}>
                     Login with Facebook
                   </button>
                 </a>

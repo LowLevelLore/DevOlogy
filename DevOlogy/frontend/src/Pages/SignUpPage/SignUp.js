@@ -365,7 +365,7 @@ export default class SignUp extends Component {
                 Sign Up
               </button>
             </form>
-            <div className="container my-2 fs-8">
+            <div className="container my-2 fs-8 text-center">
               {this.state.message}
             </div>
           </div>
@@ -388,9 +388,9 @@ export default class SignUp extends Component {
               <a
                 className="form-content"
                 href="/auth/social-core/login/facebook/"
-                disabled={true}
               >
-                <button className="btn btn-primary">Login with Facebook</button>
+                <button className="btn btn-primary"
+                disabled={true}>Login with Facebook</button>
               </a>
             </div>
           </div>
@@ -403,7 +403,7 @@ export default class SignUp extends Component {
           <div>
             Already have an Account ?{" "}
             <a
-              href="/auth/login"
+              href="/login/"
               className="normalize-link"
               style={{ marginLeft: "8px" }}
             >
