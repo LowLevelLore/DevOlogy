@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as default_views
-from .views import log_out_view, password_reset_request, user_data_deletion, fb_login_view
+from .views import log_out_view, password_reset_request, user_data_deletion, fb_login_view, activate
 from django.conf.urls import url, include
 
 urlpatterns = [
@@ -19,5 +19,6 @@ urlpatterns = [
          name='password_reset_complete'),
     url('social-core/', include('social_django.urls', namespace='social')),
     path('fb/user-data-deletion/', user_data_deletion),
-    path('fb/login/done', fb_login_view)
+    path('fb/login/done', fb_login_view),
+    path('activate_account/<uidb64>/<token>/', activate, name="activate"),
 ]

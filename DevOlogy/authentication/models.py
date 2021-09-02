@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 import string
 import random
+from django.contrib.auth.hashers import make_password
 
 
 id_length = 20
@@ -198,3 +199,24 @@ class User(AbstractBaseUser):
         if len(min_sugg) < 5:
             min_sugg = [x for x in User.objects.prefetch_related().all()[:4] if (x not in following and x != self)]
         return min_sugg
+
+
+class InactiveUser(models.Model):
+    custom_id = models.CharField(max_length=id_length, null=False, blank=False, editable=False, unique=True)
+    email = models.EmailField(max_length=240, null=False, blank=False, unique=False)
+    username = models.CharField(max_length=200, null=False, blank=False, unique=False)
+    full_name = models.CharField(max_length=300, null=False, blank=False)
+    is_active = models.BooleanField(default=False)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'full_name']
+
+    def save(self, *args, **kwargs):
+        try_to_match = list(InactiveUser.objects.filter(email=self.email))
+        if len(try_to_match) == 0:
+            pass
+        else:
+            for match in try_to_match:
+                match.delete()
+        if self.custom_id == '' or self.custom_id is None:
+                self.custom_id = make_custom_user_id()
+        super(InactiveUser, self).save(*args, **kwargs)

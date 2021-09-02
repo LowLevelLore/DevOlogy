@@ -14,7 +14,6 @@ EXCLUDED_USERNAME_CHARACTERS = ['@', '!', '#', '$', '%', '^', '&', '*',
 
 
 def check_email(email):
-    print(url('social:begin', 'facebook'))
     return re.fullmatch(REGEX_FOR_EMAIL, email)
 
 
@@ -74,7 +73,7 @@ def isEmailAvailable(request):
             body = request.body.decode('utf-8')
             email = json.loads(body)["email"]
             x = list(get_user_model().objects.filter(Q(email=email)))
-            if check_email(email) and len(x) == 0:
+            if (check_email(email) and len(x) == 0):
                 is_available = True
             response_data = json.dumps({'response': is_available})
             mimetype = 'application/json'

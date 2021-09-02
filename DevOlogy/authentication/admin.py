@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User
+from .models import User, InactiveUser
 
 # Register your models here.
 
@@ -8,3 +8,5 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('email', 'username')
 
 admin.site.register(User, UserAdmin)
+
+admin.site.register(InactiveUser)

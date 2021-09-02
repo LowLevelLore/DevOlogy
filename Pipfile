@@ -16,6 +16,7 @@ django-crispy-forms = "*"
 python-social-auth = "*"
 social-auth-app-django = "*"
 django-sslserver = "*"
+django-utils-six = "*"
 
 [dev-packages]
 

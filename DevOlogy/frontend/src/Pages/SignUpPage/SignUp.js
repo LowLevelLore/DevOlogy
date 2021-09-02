@@ -44,6 +44,7 @@ export default class SignUp extends Component {
       canSubmit: false,
       userNameError: "",
       showUserNameError: false,
+      message: "",
     };
   }
 
@@ -80,7 +81,7 @@ export default class SignUp extends Component {
   };
 
   validateUserName = async () => {
-    if (this.state.username.length === 0) {
+    if (this.state.username.length == 0) {
       this.setState({
         isUserNameValid: false,
         showUserNameError: false,
@@ -138,8 +139,14 @@ export default class SignUp extends Component {
   };
 
   validateName = () => {
-    let isValid = (this.state.name.length >= 3 && this.state.name.length <= 40)
-    this.setState({isNameValid: isValid, showNameError: this.state.name.length === 0 ? false : !isValid}, this.toggleCanSubmit)
+    let isValid = this.state.name.length >= 3 && this.state.name.length <= 40;
+    this.setState(
+      {
+        isNameValid: isValid,
+        showNameError: this.state.name.length === 0 ? false : !isValid,
+      },
+      this.toggleCanSubmit
+    );
   };
 
   handleEmailChange = (e) => {
@@ -166,10 +173,41 @@ export default class SignUp extends Component {
       this.setState({ canSubmit: false });
     }
   };
+  handleSubmit = async (e) => {
+    e.preventDefault();
+    this.setState({canSubmit: false})
+    await fetch("/signup/", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        email: this.state.email,
+        name: this.state.name,
+        username: this.state.username,
+        password: this.state.password,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.code === 200){
+          this.setState({message: "An activation link has been sent to your email ID"})
+        }
+        else if (data.code === 401){
+          this.setState({message: "An error occured please try again later"})
+        }
+        else{}
+      });
+  };
 
   render() {
     return (
       <div className="container">
+        
         <div className="white-box flex-h-center" id="main">
           <div className="container-fluid logo-c flex-h-center">
             <img id="logo" src="/static/images/written-logo.png" alt="" />
@@ -190,7 +228,7 @@ export default class SignUp extends Component {
                   placeholder={this.state.email_placeholder}
                   className="form-content"
                   onFocus={() => {
-                    this.setState({ email_placeholder: "" });
+                    this.setState({ email_placeholder: "" }, this.validateEmail);
                   }}
                   onBlur={() => {
                     this.setState(
@@ -322,10 +360,14 @@ export default class SignUp extends Component {
                 className="btn btn-primary form-content"
                 id="sub-btn"
                 disabled={!this.state.canSubmit}
+                onClick={this.handleSubmit}
               >
                 Sign Up
               </button>
             </form>
+            <div className="container my-2 fs-8">
+              {this.state.message}
+            </div>
           </div>
           <div className="container-fluid extras">
             <div className="row mt-2">
