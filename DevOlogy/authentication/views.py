@@ -13,6 +13,10 @@ from django.contrib.auth import views as default_views
 import threading
 import json
 
+
+def fb_login_view(request):
+    pass
+
 def log_out_view(request):
     if request.method == "POST":
         logout(request)
@@ -113,3 +117,6 @@ def sign_up_view(request):
             return render(request, "frontend/index.html")
     else:
         pass  # Error 404 Page To Be Created
+
+def user_data_deletion(request):
+    pass

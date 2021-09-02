@@ -1,6 +1,7 @@
 from django.urls import path
 from django.contrib.auth import views as default_views
-from .views import log_out_view, password_reset_request
+from .views import log_out_view, password_reset_request, user_data_deletion, fb_login_view
+from django.conf.urls import url, include
 
 urlpatterns = [
     path("logout/", log_out_view, name='logout_view'),
@@ -16,4 +17,7 @@ urlpatterns = [
          default_views.PasswordResetCompleteView.as_view(
              template_name='auth/PasswordReset/password_reset_complete.html'),
          name='password_reset_complete'),
+    url('social-core/', include('social_django.urls', namespace='social')),
+    path('fb/user-data-deletion/', user_data_deletion),
+    path('fb/login/done', fb_login_view)
 ]

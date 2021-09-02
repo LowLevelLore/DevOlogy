@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.db.models import Q
 import re
+from django.conf.urls import url
 # Create your views here.
 
 REGEX_FOR_EMAIL = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
@@ -13,6 +14,7 @@ EXCLUDED_USERNAME_CHARACTERS = ['@', '!', '#', '$', '%', '^', '&', '*',
 
 
 def check_email(email):
+    print(url('social:begin', 'facebook'))
     return re.fullmatch(REGEX_FOR_EMAIL, email)
 
 
@@ -20,9 +22,11 @@ def check_username(username: str) -> tuple:
     length = 0
     for i in username:
         length += 1
+        if length == MAX_USERNAME_CHARACTERS:
+            return (False, "Username too long .")
         if i in EXCLUDED_USERNAME_CHARACTERS:
             return (False, 'You Can\'t use ' + i + ' in Username .')
-    if length >=5 :
+    if length >= 5:
         return (True, None)
     else:
         return (False, 'Minimum 5 characters are required in Username .')

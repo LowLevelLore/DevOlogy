@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     # THIRD PARTY APPS
     'rest_framework', 
     'crispy_forms',   
+    'sslserver'
 ]
 
 MIDDLEWARE = [
@@ -64,6 +65,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'crum.CurrentRequestUserMiddleware',
+]
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.facebook.FacebookOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 ROOT_URLCONF = 'DevOlogy.urls'
@@ -79,6 +85,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -161,5 +169,12 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config['SECRETS']['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = config['SECRETS']['EMAIL_HOST_PASSWORD']
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/auth/fb/login/done/'
 LOGOUT_REDIRECT_URL = '/core/login'
+SOCIAL_AUTH_FACEBOOK_API_VERSION = '11.0'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_USER_FIELDS = ["email", "username", "full_name"]
+
+SOCIAL_AUTH_FACEBOOK_KEY = config["SECRETS"]["SOCIAL_AUTH_FACEBOOK_KEY"]
+SOCIAL_AUTH_FACEBOOK_SECRET = config["SECRETS"]["SOCIAL_AUTH_FACEBOOK_SECRET"]
+

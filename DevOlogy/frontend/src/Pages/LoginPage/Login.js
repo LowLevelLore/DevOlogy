@@ -58,6 +58,7 @@ export default class Login extends Component {
     return this.state.password.length >= 8;
   }
   handleSubmit = async (e) => {
+    console.log(getCookie("csrftoken"))
     if (this.isDataValid()) {
       e.preventDefault();
       await fetch("/login/", {
@@ -68,6 +69,7 @@ export default class Login extends Component {
           "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
           "X-CSRFToken": getCookie("csrftoken"),
         },
+        credentials: "include",
         body: JSON.stringify({
           username: this.state.username_email,
           password: this.state.password,

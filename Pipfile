@@ -13,6 +13,9 @@ dnspython = "*"
 django-crum = "*"
 django-currentuser = "*"
 django-crispy-forms = "*"
+python-social-auth = "*"
+social-auth-app-django = "*"
+django-sslserver = "*"
 
 [dev-packages]
 

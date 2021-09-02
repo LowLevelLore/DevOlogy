@@ -30,14 +30,17 @@ export default class SignUp extends Component {
       username_placeholder: username_placeholder,
       name_placeholder: name_placeholder,
       password_placeholder: password_placeholder,
-      isEmailValid: true,
-      isPasswordValid: true,
-      isNameValid: true,
-      isUserNameValid: true,
+      isEmailValid: false,
+      isPasswordValid: false,
+      isNameValid: false,
+      isUserNameValid: false,
       email: "",
       username: "",
       password: "",
       name: "",
+      showEmailError: false,
+      showNameError: false,
+      showPasswordError: false,
       canSubmit: false,
       userNameError: "",
       showUserNameError: false,
@@ -46,7 +49,11 @@ export default class SignUp extends Component {
 
   validateEmail = async () => {
     if (this.state.email.length === 0) {
-      this.setState({ isEmailValid: true, canSubmit: false });
+      this.setState({
+        isEmailValid: false,
+        showEmailError: false,
+        canSubmit: false,
+      });
     } else {
       await fetch("/api/isEmailAvailable/", {
         method: "POST",
@@ -62,11 +69,10 @@ export default class SignUp extends Component {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
           if (data.response) {
-            this.setState({ isEmailValid: true });
+            this.setState({ isEmailValid: true, showEmailError: false });
           } else if (!data.response) {
-            this.setState({ isEmailValid: false });
+            this.setState({ isEmailValid: false, showEmailError: true });
           }
           this.toggleCanSubmit();
         });
@@ -75,7 +81,11 @@ export default class SignUp extends Component {
 
   validateUserName = async () => {
     if (this.state.username.length === 0) {
-      this.setState({ isUserNameValid: true, canSubmit: false });
+      this.setState({
+        isUserNameValid: false,
+        showUserNameError: false,
+        canSubmit: false,
+      });
     } else {
       await fetch("/api/isUserNameAvailable/", {
         method: "POST",
@@ -91,11 +101,14 @@ export default class SignUp extends Component {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
           if (data.response) {
-            this.setState({ isUserNameValid: true , showUserNameError: false});
+            this.setState({ isUserNameValid: true, showUserNameError: false });
           } else if (!data.response) {
-            this.setState({ isUserNameValid: false , showUserNameError: true , userNameError: data.error });
+            this.setState({
+              isUserNameValid: false,
+              showUserNameError: true,
+              userNameError: data.error,
+            });
           }
           this.toggleCanSubmit();
         });
@@ -104,17 +117,30 @@ export default class SignUp extends Component {
 
   validatePassword = () => {
     if (this.state.password.length === 0) {
-      this.setState({ isPasswordValid: true, canSubmit: false });
+      this.setState({
+        isPasswordValid: false,
+        showPasswordError: false,
+        canSubmit: false,
+      });
     } else {
       if (this.state.password.length >= 8) {
-        this.setState({ isPasswordValid: true }, this.toggleCanSubmit);
+        this.setState(
+          { isPasswordValid: true, showPasswordError: false },
+          this.toggleCanSubmit
+        );
       } else {
-        this.setState({ isPasswordValid: false }, this.toggleCanSubmit);
+        this.setState(
+          { isPasswordValid: false, showPasswordError: true },
+          this.toggleCanSubmit
+        );
       }
     }
   };
 
-  validateName = () => {};
+  validateName = () => {
+    let isValid = (this.state.name.length >= 3 && this.state.name.length <= 40)
+    this.setState({isNameValid: isValid, showNameError: this.state.name.length === 0 ? false : !isValid}, this.toggleCanSubmit)
+  };
 
   handleEmailChange = (e) => {
     this.setState({ email: e.target.value }, this.validateEmail);
@@ -167,16 +193,19 @@ export default class SignUp extends Component {
                     this.setState({ email_placeholder: "" });
                   }}
                   onBlur={() => {
-                    this.setState({
-                      email_placeholder: email_placeholder,
-                    });
+                    this.setState(
+                      {
+                        email_placeholder: email_placeholder,
+                      },
+                      this.validateEmail
+                    );
                   }}
                 />
                 <div
                   className="form-content-err"
                   id="email-err"
                   style={{
-                    display: `${this.state.isEmailValid ? "none" : "block"}`,
+                    display: `${!this.state.showEmailError ? "none" : "block"}`,
                   }}
                 >
                   <img src="/static/images/error.png" width="100%" />
@@ -196,24 +225,33 @@ export default class SignUp extends Component {
                     this.setState({ username_placeholder: "" });
                   }}
                   onBlur={() => {
-                    this.setState({
-                      username_placeholder: username_placeholder,
-                    });
+                    this.setState(
+                      {
+                        username_placeholder: username_placeholder,
+                      },
+                      this.validateUserName
+                    );
                   }}
                 />
                 <div
                   className="form-content-err"
                   id="username-err"
                   style={{
-                    display: `${this.state.isUserNameValid ? "none" : "block"}`,
+                    display: `${
+                      !this.state.showUserNameError ? "none" : "block"
+                    }`,
                   }}
                 >
                   <img src="/static/images/error.png" width="100%" />
                 </div>
               </div>
-              <div className="container-fluid flex-v-center small-error"
-              style={{ display: `${this.state.showUserNameError ? 'flex' : 'none'}`}}>
-                  {this.state.userNameError}
+              <div
+                className="container-fluid flex-v-center small-error"
+                style={{
+                  display: `${this.state.showUserNameError ? "flex" : "none"}`,
+                }}
+              >
+                {this.state.userNameError}
               </div>
               <div className="container-fluid flex-v-center">
                 {" "}
@@ -229,17 +267,20 @@ export default class SignUp extends Component {
                     this.setState({ name_placeholder: "" });
                   }}
                   onBlur={() => {
-                    this.setState({ name_placeholder: name_placeholder });
+                    this.setState(
+                      { name_placeholder: name_placeholder },
+                      this.validateName
+                    );
                   }}
                 />
                 <div
                   className="form-content-err"
                   id="name-err"
                   style={{
-                    display: `${this.state.isNameValid ? "none" : "block"}`,
+                    display: `${!this.state.showNameError ? "none" : "block"}`,
                   }}
                 >
-                  <img />
+                  <img src="/static/images/error.png" width="100%" />
                 </div>
               </div>
               <div className="container-fluid flex-v-center">
@@ -255,9 +296,12 @@ export default class SignUp extends Component {
                     this.setState({ password_placeholder: "" });
                   }}
                   onBlur={() => {
-                    this.setState({
-                      password_placeholder: password_placeholder,
-                    });
+                    this.setState(
+                      {
+                        password_placeholder: password_placeholder,
+                      },
+                      this.validatePassword
+                    );
                   }}
                   id="password"
                 />
@@ -265,7 +309,9 @@ export default class SignUp extends Component {
                   id="pass-err"
                   className="form-content-err"
                   style={{
-                    display: `${this.state.isPasswordValid ? "none" : "block"}`,
+                    display: `${
+                      !this.state.showPasswordError ? "none" : "block"
+                    }`,
                   }}
                 >
                   <img src="/static/images/error.png" width="100%" />
@@ -275,7 +321,7 @@ export default class SignUp extends Component {
                 type="submit"
                 className="btn btn-primary form-content"
                 id="sub-btn"
-                disabled={! this.state.canSubmit}
+                disabled={!this.state.canSubmit}
               >
                 Sign Up
               </button>
@@ -299,7 +345,8 @@ export default class SignUp extends Component {
             <div className="fb-btn flex-v-center">
               <a
                 className="form-content"
-                href="{% url 'social:begin' 'facebook' %}"
+                href="/auth/social-core/login/facebook/"
+                disabled={true}
               >
                 <button className="btn btn-primary">Login with Facebook</button>
               </a>
