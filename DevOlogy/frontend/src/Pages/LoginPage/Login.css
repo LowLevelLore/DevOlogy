@@ -15,7 +15,7 @@ input:focus{text-align: left; outline: 1.5px solid black;}
 .normalize-link:visited{text-decoration: none; color: blue;}
 #signup{margin-top: 15px !important; max-width: 400px; margin: 5% auto 0 auto; padding: 5px 10px}
 .fb-btn{margin-left: 8%;}
-.err{font-size: 15px; color: red; outline-color: red !important;}
+.err{font-size: 15px; color: red; outline-color: red !important; outline-width: 2px !important;}
 .form-content-inp{width: 100% !important; height:100% !important; display: block; height: 100%;}
 .form-cf{width: 60% !important;min-height:40px ; margin-top: 12px;}
 

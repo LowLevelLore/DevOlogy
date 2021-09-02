@@ -34,7 +34,7 @@ export default class Login extends Component {
     };
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    // this.handleSubmit = this.handleSubmit.bind(this);
     this.isDataValid = this.isDataValid.bind(this);
   }
   handleUsernameChange(e) {
@@ -57,10 +57,10 @@ export default class Login extends Component {
     }
     return this.state.password.length >= 8;
   }
-  handleSubmit(e) {
+  handleSubmit = async (e) => {
     if (this.isDataValid()) {
       e.preventDefault();
-      fetch("/login/", {
+      await fetch("/login/", {
         method: "POST",
         credentials: "same-origin",
         headers: {
