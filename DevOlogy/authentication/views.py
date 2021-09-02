@@ -140,6 +140,7 @@ def sign_up_view(request):
                             'domain': current_site.domain,
                             'uid': urlsafe_base64_encode(force_bytes(user.custom_id)),
                             'token': email_confirmation_token.make_token(user),
+                            "last": f"Team {WEBSITE_NAME} ."
                         })
                 to_email = email
                 send_mail(mail_subject, message, EMAIL_HOST_USER, [to_email])

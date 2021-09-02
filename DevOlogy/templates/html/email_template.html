@@ -1,5 +1,11 @@
 {% autoescape off %}
-Hi ,
-Please click on the link to confirm your registration,
+Hello, 
+We have recieved a request to Make Your Account on our Social Media App, 
+this is a conformatory email to verify that the email address submitted 
+by you was legit, to activate your account please follow the link : 
 {{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+Sincerely,
+{{last}}
+
 {% endautoescape %}
