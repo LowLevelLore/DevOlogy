@@ -1,9 +1,11 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import (knowIfLoggedIn, isUserNameAvailable, isEmailAvailable)
+from .views import (knowIfLoggedIn, isUserNameAvailable, isEmailAvailable, getRequestUserInfo)
 
 urlpatterns = [
     path('isLoggedIn/', knowIfLoggedIn),
     path('isUserNameAvailable/', isUserNameAvailable),
-    path('isEmailAvailable/', isEmailAvailable)
+    path('isEmailAvailable/', isEmailAvailable),
+    path('getRequestUserInfo/', getRequestUserInfo),
+    
 ]

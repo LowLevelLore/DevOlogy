@@ -1,11 +1,6 @@
 import ReactDOM from "react-dom";
 import React, { Component } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  Redirect,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import regeneratorRuntime from "regenerator-runtime";
 import Feed from "./Pages/Feed/Feed";
 import Login from "./Pages/LoginPage/Login";
@@ -18,9 +13,10 @@ class App extends Component {
     super();
     this.state = { isLoggedIn: false };
     this.knowIfLoggedIn = this.knowIfLoggedIn.bind(this);
+  }
+  UNSAFE_componentWillMount() {
     this.knowIfLoggedIn();
   }
-
   // Store in state
   async knowIfLoggedIn() {
     await fetch("/api/isLoggedIn", {
@@ -40,38 +36,24 @@ class App extends Component {
   render() {
     return (
       <Router>
-        {this.state.isLoggedIn ? (
-          <div className="content">
-            <Switch>
-              <Route exact path="/">
-                <Feed />
-              </Route>
-              <Route path="/post/:postId">
-                <Post />
-              </Route>
-              <Route path="/profile/:userId">
-                <Profile />
-              </Route>
-            </Switch>
-          </div>
-        ) : (
-          <div className="content">
-            <Switch>
-              <Route exact path="/">
-                <Login />
-              </Route>
-              <Route exact path="/login">
-                <Login />
-              </Route>
-              <Route exact path="/post/:postId">
-                <Login />
-              </Route>
-              <Route exact path="/signup">
-                <SignUp />
-              </Route>
-            </Switch>
-          </div>
-        )}
+        <Switch>
+          <Route exact path="/">
+            <Feed />
+          </Route>
+          <Route path="/post/:postId">
+            <Post />
+          </Route>
+          <Route path="/profile/:userId">
+            <Profile />
+          </Route>
+
+          <Route exact path="/login">
+            <Login />
+          </Route>
+          <Route exact path="/signup">
+            <SignUp />
+          </Route>
+        </Switch>
       </Router>
     );
   }

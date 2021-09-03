@@ -59,11 +59,12 @@ def isUserNameAvailable(request):
                     error = y[1]
             else:
                 error = "Username Occupied"
-            response_data = json.dumps({'response': is_available, 'error': error})
+            response_data = json.dumps(
+                {'response': is_available, 'error': error})
             mimetype = 'application/json'
         return HttpResponse(response_data, mimetype)
     else:
-        return HttpResponse("Page Not Found")  #TODO
+        return HttpResponse("Page Not Found")  # TODO
 
 
 def isEmailAvailable(request):
@@ -79,4 +80,16 @@ def isEmailAvailable(request):
             mimetype = 'application/json'
             return HttpResponse(response_data, mimetype)
     else:
-        return HttpResponse("Page Not Found")  #TODO
+        return HttpResponse("Page Not Found")  # TODO
+
+
+def getRequestUserInfo(request):
+    if request.method == "POST":
+        if request.is_ajax():
+            user = request.user
+            data = {'username': user.username, 'name': user.full_name, 'dp_url': user.get_dp_path}
+            response_data = json.dumps({'response': data})
+            mimetype = 'application/json'
+            return HttpResponse(response_data, mimetype)
+    else:
+        return HttpResponse("Page Not Found")  # TODO

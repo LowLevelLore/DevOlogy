@@ -1,0 +1,177 @@
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: whitesmoke !important;
+  overflow-x: hidden;
+}
+
+nav {
+  display: flex;
+  flex-direction: row;
+  height: 44px;
+  width: 100%;
+  background-color: white !important;
+  border-bottom: 1px solid #000;
+}
+
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+}
+
+.logo-c {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  height: 80%;
+}
+
+.flex-v-center {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-h-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.center-nav {
+  width: 33%;
+}
+.right-nav {
+  width: 33%;
+  max-width: 270px;
+  float: right;
+}
+.left-nav {
+  width: 33%;
+}
+
+#search {
+  width: 40%;
+  min-width: 180px;
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+}
+
+.sb {
+  justify-content: space-between;
+}
+
+.git {
+  text-align: center;
+}
+.git:focus {
+  outline: 1.5px solid black;
+  text-align: left;
+}
+
+#srchResults {
+  border: 2.5px solid black;
+  box-shadow: 20px 20px 20px grey;
+  overflow-y: auto;
+  overflow-x: hidden;
+  align-self: center;
+  position: absolute;
+  background-color: white;
+  display: none;
+  top: 0;
+  justify-content: space-between;
+  width: 40%;
+  max-height: 40%;
+  min-width: 150px;
+  /* min-height: 250px; */
+  margin-top: 47px;
+  margin-left: 30%;
+}
+
+.ui-autocomplete {
+  z-index: 2147483647;
+}
+
+.noDots {
+  list-style: none;
+}
+
+.right {
+  float: right;
+}
+
+.userDP {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 50% !important;
+}
+.me-row {
+  justify-content: center;
+  align-items: center;
+  height: 35px;
+}
+.normalize-link {
+  color: #000;
+  text-decoration: none;
+}
+.normalize-link:hover {
+  cursor: pointer;
+  text-decoration: none;
+  color: #000;
+}
+.normalize-link:visited {
+  text-decoration: none;
+  color: #000;
+}
+.internal {
+  height: 40% !important;
+}
+.srchres {
+  height: 90%;
+  width: 90%;
+  margin: 5% 5%;
+}
+.heart {
+  border-radius: 10% !important;
+}
+.messenger {
+  border-radius: 6% !important;
+}
+
+button {
+  outline: none;
+  box-shadow: none !important;
+  border: none;
+}
+
+@media screen and (max-width: 722px) {
+  #srchResults {
+    display: none !important;
+  }
+  .center-nav {
+    display: none;
+    width: 0%;
+  }
+  .right-nav {
+    width: 50%;
+  }
+  .left-nav {
+    width: 50%;
+  }
+  .sb {
+    padding-right: 5%;
+  }
+}

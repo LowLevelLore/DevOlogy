@@ -7,7 +7,9 @@ input:focus{text-align: left; outline: 1.5px solid black;}
 .form{min-height: 180px;}
 .extras{min-height: 100px;}
 .form-content{min-height:40px ; margin-top: 12px; width: 60%;}
-#main{margin-top: 11% !important;margin: 11% auto 0 auto !important;min-height: 350px;max-width: 400px;}
+#main{margin-top: 11% !important;margin: 11% auto 0 auto !important;min-height: 350px;max-width: 400px;
+}
+.main{display:block; margin:auto;}
 #logo{height: 70px;}
 .flex-v-center{display: flex; flex-direction: row; align-items: center; justify-content: center;}
 .normalize-link{text-decoration: none; color: blue;}

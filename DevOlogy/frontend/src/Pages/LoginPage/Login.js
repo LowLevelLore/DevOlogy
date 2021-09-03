@@ -23,6 +23,7 @@ const password_placeholder = "Password";
 export default class Login extends Component {
   constructor() {
     super();
+
     this.state = {
       username_email: "",
       password: "",

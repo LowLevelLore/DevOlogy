@@ -131,9 +131,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-in'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -177,4 +177,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_USER_FIELDS = ["email", "username", "full_name"]
 
 SOCIAL_AUTH_FACEBOOK_KEY = config["SECRETS"]["SOCIAL_AUTH_FACEBOOK_KEY"]
 SOCIAL_AUTH_FACEBOOK_SECRET = config["SECRETS"]["SOCIAL_AUTH_FACEBOOK_SECRET"]
+
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
