@@ -111,7 +111,6 @@ def getSearchResults(request):
                     data['response'][val.username] = {
                         'username': val.username, 'image': '/static/svgs/user.png',
                         'full_name': val.full_name, 'link': f'/{val.username}'}
-            print(data)
             response_data = json.dumps({'response': data})
             mimetype = 'application/json'
             return HttpResponse(response_data, mimetype)

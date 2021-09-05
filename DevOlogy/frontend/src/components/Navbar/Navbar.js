@@ -31,7 +31,6 @@ export default class Navbar extends Component {
       searchResults: {},
       showSearchHere: true,
     };
-    console.log(this.state.requestUserData);
   }
   getSearchResults = async () => {
     await fetch("/api/getSearchResults/", {
