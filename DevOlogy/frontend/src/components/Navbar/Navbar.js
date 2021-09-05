@@ -29,6 +29,7 @@ export default class Navbar extends Component {
       searchDiv: null,
       isMouseInside: false,
       searchResults: {},
+      showSearchHere: true,
     };
     console.log(this.state.requestUserData);
   }
@@ -50,7 +51,7 @@ export default class Navbar extends Component {
       .then((data) => {
         this.setState(
           { searchResults: data.response.response },
-          this.renderSearchResults()
+          this.renderSearchResults
         );
       });
   };
@@ -66,43 +67,19 @@ export default class Navbar extends Component {
     })
       .then((response) => response.json())
       .then((data) => {
-        this.setState(
-          { requestUserData: data.response },
-          this.props.setUserData(data.response)
-        );
+        this.setState({ requestUserData: data.response }, () => {
+          this.props.setUserData(data.response);
+        });
         return data.response;
       });
   };
-  renderSearchResults = () => {
-    console.log( Object.keys(this.state.searchResults).length === 0)
-    $('#results').append(
-      this.state.searchResults.length > 0
-        ? this.state.searchResults.map((search) => (
-          
-            <a href={search.link}>
-              console.log(search)
-              <div className="rectangle row">
-                <div className="dp col-4">
-                  <img
-                    className="searchImage"
-                    src={search.image}
-                    alt={search + "'s image"}
-                  />
-                </div>
-                
-                <div className="name col-8">
-                  <div className="container name-upper">{search.username}</div>
-                  <div className="container name-lower">{search.full_name}</div>
-                </div>
-              </div>
-            </a>
-          ))
-        : "No Results Found")
-  };
+  renderSearchResults = () => {};
   componentDidMount() {
     this.setState({ searchDiv: document.getElementById("srchResults") });
   }
   handleSearchOnChange = (e) => {
+    if (document.getElementById("results").innerHTML === ""){this.setState({showSearchHere: true})}
+    else{this.setState({showSearchHere: false})}
     this.setState({ searchValue: e.target.value }, () => {
       this.getSearchResults();
     });
@@ -172,10 +149,33 @@ export default class Navbar extends Component {
           onMouseEnter={() => this.setState({ isMouseInside: true })}
         >
           <div className="header">
-            <b>Search Here</b>
+            {this.state.showSearchHere ? <b>Search Here</b> : ""}
           </div>
           <div id="results">
+            {Object.keys(this.state.searchResults).length > 0
+              ? Object.keys(this.state.searchResults).map((key) => (
+                  <a className="link" href={this.state.searchResults[key].link} key={this.state.searchResults[key].username}>
+                    <div className="rectangle row">
+                      <div className="dp col-2">
+                        <img
+                          className="searchImage"
+                          src={this.state.searchResults[key].image}
+                          alt={this.state.searchResults[key] + "'s image"}
+                        />
+                      </div>
 
+                      <div className="name col-8">
+                        <div className="container name-upper">
+                          {this.state.searchResults[key].username}
+                        </div>
+                        <div className="container name-lower">
+                          {this.state.searchResults[key].full_name}
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                ))
+              : "No Results Found"}
           </div>
         </div>
       </>

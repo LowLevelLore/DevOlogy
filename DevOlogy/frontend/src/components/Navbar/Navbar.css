@@ -31,37 +31,50 @@ nav {
   width: 100%
 }
 #srchResults{
-  margin-left: 30%;
-    width: 40%;
+  margin-left: 35%;
+    width: 30%;
+    min-width: 300px;
     max-width: 40%;
     overflow-y: auto;
     background-color: white;
     margin-top: 1px;
+    border: 2.5px solid black;
+    box-shadow: 20px 20px 20px grey;
+    border-radius: 40px;
 }
 .link, .link:hover, .link:visited{
   color: black;
   text-decoration: none;
 }
 .rectangle{
+  border-bottom: 1px solid grey;
   height: 20%;
+  padding: 10px 0;
+  display: flex;
+}
+#results{
+  margin: 0 30px;
 }
 .searchImage{
-  height: 15px;
-  width: 15px;
+  height: 35px;
+  width: 35px;
   border-radius: 50%;
 }
 .name{
   height: 50%;
+  position: relative;
+  right: 0;
 }
-.name .container{
+.container{
   display: flex;
-  justify-content: center;align-items: center;
   font-size: 18px;
 }
-.upper{
+.name-upper{
   font-weight: bold;
-  font-size: 22px;
+  font-size: 18px;
 }
+.name-lower{font-size: 12px;}
+.dp{display: flex;justify-content: center;align-items: center;}
 
 
 

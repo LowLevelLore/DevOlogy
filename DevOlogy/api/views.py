@@ -97,7 +97,7 @@ def getRequestUserInfo(request):
 def getSearchResults(request):
     if request.method == "POST":
         if request.is_ajax():
-            query = json.loads(request.body.decode('utf-8'))["query"]
+            query = json.loads(request.body.decode('utf-8'))["query"].lower()
             lst = sorted(list(get_user_model().objects.prefetch_related().filter(
             Q(username__icontains=query) | Q(full_name__icontains=query))[0:1000]),
                      key=lambda t: [t.get_no_of_followers], reverse=True)
