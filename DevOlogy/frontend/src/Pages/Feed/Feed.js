@@ -27,28 +27,13 @@ export default class Feed extends Component {
       totalPosts: 0,
       currentPost: 0,
     };
-    this.getRequestUserInfo();
   }
-  getRequestUserInfo = async () => {
-    await fetch("/api/getRequestUserInfo/", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: {
-        Accept: "application/json",
-        "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
-        "X-CSRFToken": getCookie("csrftoken"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        this.setState({ requestUserData: data.response });
-      });
-  };
+  
+  setUserData = (data) => {this.setState({requestUserData: data})}
   render() {
     return (
       <>
-        <Navbar userData={this.state.requestUserData}/>
+        <Navbar setUserData={this.setUserData}/>
         <div className="main" id="main">
           <div className="cont infinite-container" id="ic"></div>
         </div>

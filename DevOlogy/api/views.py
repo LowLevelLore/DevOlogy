@@ -93,3 +93,27 @@ def getRequestUserInfo(request):
             return HttpResponse(response_data, mimetype)
     else:
         return HttpResponse("Page Not Found")  # TODO
+
+def getSearchResults(request):
+    if request.method == "POST":
+        if request.is_ajax():
+            query = json.loads(request.body.decode('utf-8'))["query"]
+            lst = sorted(list(get_user_model().objects.prefetch_related().filter(
+            Q(username__icontains=query) | Q(full_name__icontains=query))[0:1000]),
+                     key=lambda t: [t.get_no_of_followers], reverse=True)
+            data = {'response': {}}
+            for val in lst:
+                try:
+                    data['response'][val.username] = {
+                        'username': val.username, 'image': val.display_picture.url,
+                        'full_name': val.full_name, 'link': f'/{val.username}'}
+                except:
+                    data['response'][val.username] = {
+                        'username': val.username, 'image': '/static/svgs/user.png',
+                        'full_name': val.full_name, 'link': f'/{val.username}'}
+            print(data)
+            response_data = json.dumps({'response': data})
+            mimetype = 'application/json'
+            return HttpResponse(response_data, mimetype)
+    else:
+        return HttpResponse("Page Not Found")  # TODO
