@@ -1,5 +1,13 @@
 import React, { Component } from "react";
 import "./Navbar.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faHome,
+  faComments,
+  faCompass,
+  faHeart,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 
 const searchInputPlaceholder = "Search";
 function getCookie(name) {
@@ -18,6 +26,9 @@ function getCookie(name) {
   return cookieValue;
 }
 
+const activeColour = "black";
+const normalColour = "gray";
+
 export default class Navbar extends Component {
   constructor(props) {
     super(props);
@@ -30,6 +41,11 @@ export default class Navbar extends Component {
       isMouseInside: false,
       searchResults: {},
       showSearchHere: true,
+      isActivityActive: window.location.pathname.startsWith('/activity'),
+      isExploreActive: window.location.pathname.startsWith('/explore'),
+      isHomeActive: window.location.pathname === '/',
+      isMessengerActive: window.location.pathname.startsWith('/chat'),
+      isProfileActive: window.location.pathname.startsWith('/profile'),
     };
   }
   getSearchResults = async () => {
@@ -77,8 +93,11 @@ export default class Navbar extends Component {
     this.setState({ searchDiv: document.getElementById("srchResults") });
   }
   handleSearchOnChange = (e) => {
-    if (document.getElementById("results").innerHTML === ""){this.setState({showSearchHere: true})}
-    else{this.setState({showSearchHere: false})}
+    if (document.getElementById("results").innerHTML === "") {
+      this.setState({ showSearchHere: true });
+    } else {
+      this.setState({ showSearchHere: false });
+    }
     this.setState({ searchValue: e.target.value }, () => {
       this.getSearchResults();
     });
@@ -89,7 +108,10 @@ export default class Navbar extends Component {
   };
   handleSearchOnBlur = () => {
     if (this.state.searchValue.length === 0) {
-      this.setState({ searchPlaceholder: searchInputPlaceholder });
+      this.setState({
+        searchPlaceholder: searchInputPlaceholder,
+        searchResults: {},
+      });
     } else {
       this.setState({ searchPlaceholder: this.state.searchValue });
     }
@@ -119,23 +141,56 @@ export default class Navbar extends Component {
           </div>
           <div className="rightNav">
             <div className="icon-div">
-              <img className="icon" src="/static/svgs/home.png" alt="" />
+              {/* <img className="icon" src="/static/svgs/home.png" alt="" /> */}
+              <FontAwesomeIcon
+                icon={faHome}
+                color={this.state.isHomeActive ? activeColour : normalColour}
+                size={"2x"}
+              />
             </div>
             <div className="icon-div">
-              <img className="icon" src="/static/svgs/messenger.png" alt="" />
+              {/* <img className="icon" src="/static/svgs/messenger.png" alt="" /> */}
+              <FontAwesomeIcon
+                icon={faComments}
+                color={this.state.isMessengerActive ? activeColour : normalColour}
+                size={"2x"}
+              />
             </div>
             <div className="icon-div">
-              <img className="icon" src="/static/svgs/compass.png" alt="" />
+              {/* <img className="icon" src="/static/svgs/compass.png" alt="" /> */}
+              <FontAwesomeIcon
+                icon={faCompass}
+                color={this.state.isExploreActive ? activeColour : normalColour}
+                size={"2x"}
+              />
             </div>
             <div className="icon-div">
-              <img className="icon" src="/static/svgs/heart.svg" alt="" />
+              {/* <img className="icon" src="/static/svgs/heart.svg" alt="" /> */}
+              <FontAwesomeIcon
+                icon={faHeart}
+                color={this.state.isActivityActive ? activeColour : normalColour}
+                size={"2x"}
+              />
             </div>
             <div className="icon-div">
-              <img
+              {/* <img
                 className="icon"
                 src={this.state.requestUserData.dp_url}
                 alt=""
-              />
+              /> */}
+              {this.state.requestUserData.dp_url === "/static/svgs/user.png" ? (
+                <FontAwesomeIcon
+                  icon={faUser}
+                  color={this.state.isProfileActive ? activeColour : normalColour}
+                  size={"2x"}
+                />
+              ) : (
+                <img
+                  className="icon"
+                  src={this.state.requestUserData.dp_url}
+                  alt=""
+                />
+              )}
             </div>
           </div>
         </nav>
@@ -153,7 +208,11 @@ export default class Navbar extends Component {
           <div id="results">
             {Object.keys(this.state.searchResults).length > 0
               ? Object.keys(this.state.searchResults).map((key) => (
-                  <a className="link" href={this.state.searchResults[key].link} key={this.state.searchResults[key].username}>
+                  <a
+                    className="link"
+                    href={this.state.searchResults[key].link}
+                    key={this.state.searchResults[key].username}
+                  >
                     <div className="rectangle row">
                       <div className="dp col-2">
                         <img

@@ -75,7 +75,7 @@ nav {
 }
 .name-lower{font-size: 12px;}
 .dp{display: flex;justify-content: center;align-items: center;}
-
+.icon{height: 35px; width:35px;border-radius: 50%;}
 
 
 @media screen and (max-width: 722px) {
