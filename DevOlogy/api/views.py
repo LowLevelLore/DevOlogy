@@ -12,7 +12,7 @@ MAX_USERNAME_CHARACTERS = 20
 EXCLUDED_USERNAME_CHARACTERS = ['@', '!', '#', '$', '%', '^', '&', '*',
                                 '(', ')', '{', '}', '[', ']', '\\', '/', '?', '<', '>', ',', ' ']
 
-
+# AUTHENTICATION
 def check_email(email):
     return re.fullmatch(REGEX_FOR_EMAIL, email)
 
@@ -82,7 +82,7 @@ def isEmailAvailable(request):
     else:
         return HttpResponse("Page Not Found")  # TODO
 
-
+# NAVBAR/GENERAL
 def getRequestUserInfo(request):
     if request.method == "POST":
         if request.is_ajax():
@@ -99,7 +99,7 @@ def getSearchResults(request):
         if request.is_ajax():
             query = json.loads(request.body.decode('utf-8'))["query"].lower()
             lst = sorted(list(get_user_model().objects.prefetch_related().filter(
-            Q(username__icontains=query) | Q(full_name__icontains=query))[0:1000]),
+            Q(username__icontains=query) | Q(full_name__icontains=query))[0:100]),
                      key=lambda t: [t.get_no_of_followers], reverse=True)
             data = {'response': {}}
             for val in lst:
@@ -116,3 +116,18 @@ def getSearchResults(request):
             return HttpResponse(response_data, mimetype)
     else:
         return HttpResponse("Page Not Found")  # TODO
+
+def getUserSuggestions(request):
+    if request.method == 'POST':
+        if request.is_ajax():
+            suggs =  request.user.get_min_sugg
+            response = {}
+            for i in suggs:
+                response[i.username] = {'username': i.username, 'dp_url': i.get_dp_path, 'name': i.full_name}
+            response_data = json.dumps({'response': response})
+            mimetype = 'application/json'
+            return HttpResponse(response_data, mimetype)
+    else:
+        return HttpResponse("Page Not Found") # TODO
+
+

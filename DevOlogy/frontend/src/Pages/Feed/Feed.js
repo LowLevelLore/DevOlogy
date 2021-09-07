@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./Feed.css";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Navbar from "../../components/Navbar/Navbar";
+import Post from "../Post/Post";
 
 function getCookie(name) {
   let cookieValue = null;
@@ -26,40 +27,89 @@ export default class Feed extends Component {
       requestUserData: {},
       totalPosts: 0,
       currentPost: 0,
+      userSuggestions: {},
+      page: 0,
+      posts: [],
+      hasMore: true,
     };
+    this.getUserSuggestions();
+    this.getPosts();
   }
-  
-  setUserData = (data) => {this.setState({requestUserData: data})}
+
+  setUserData = (data) => {
+    this.setState({ requestUserData: data });
+  };
+
+  getUserSuggestions = async () => {
+    await fetch("/api/getUserSuggestions/", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        this.setState({ userSuggestions: data.response });
+      });
+  }
+
+  getPosts = async () => {
+    await fetch("/", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      credentials: "include",
+      body: JSON.stringify({page: this.state.page})
+    }).then((response) => response.json()).then(data => {
+      if (data.stop){
+        this.setState({posts: [...this.state.posts, ...Object.values(data.response)], hasMore: data.hasMore})
+      }
+      else{
+        this.setState({posts: [...this.state.posts, ...Object.values(data.response)], hasMore: data.has_more, page: this.state.page+1})
+      }
+    })
+  }
+
   render() {
     return (
       <>
-        <Navbar setUserData={this.setUserData}/>
-        <div className="main" id="main">
-          <div className="cont infinite-container" id="ic"></div>
-        </div>
-
-        <div className="suggestions">
-          <div className="container-fluid">
+        <Navbar setUserData={this.setUserData} />
+        <div className="content">
+          <div className="main-content">
+            
+          </div>
+          <div className="suggestions">
             <div className="personalinfo row mt-4">
               <div className="col-4 flex-v-center">
-                <a href={this.state.requestUserData.username}>
+                <a href={"/" + this.state.requestUserData.username}>
                   <img
-                    className="main-dp"
-                    alt="Your Profile Pic"
+                    className="main-dp sugg-user-icon"
                     src={this.state.requestUserData.dp_url}
+                    alt="Your Profile Pic"
                   />
                 </a>
               </div>
-              <div className="col-5">
+              <div className="col-5 flex-h-center">
                 <div
-                  className="row ct  flex-h-center"
-                  style={{ fontSize: "17px" }}
+                  className="row "
+                  style={{ fontSize: "19px", textAlign: "center" }}
                 >
-                  <a href="" className="normalize-link">
+                  <a
+                    href={"/" + this.state.requestUserData.username}
+                    className="link"
+                  >
                     <b>{this.state.requestUserData.username}</b>
                   </a>
                 </div>
-                <div className="row ct  flex-h-center">
+                <div className="row " style={{ fontSize: "13px" }}>
                   {this.state.requestUserData.name}
                 </div>
               </div>
@@ -70,7 +120,7 @@ export default class Feed extends Component {
                   className="col-8"
                   style={{
                     textAlign: "left",
-                    fontWeight: "600",
+                    fontWeight: 600,
                     color: "rgb(133, 133, 133)",
                   }}
                 >
@@ -85,36 +135,39 @@ export default class Feed extends Component {
                   </a>
                 </div>
               </div>
-              <div className="main-sugg mt-3">
-                <b>No Suggestions</b>
-
-                <div className="row mt-2">
-                  <div className="col-3 flex-v-center">
-                    <a href="">
-                      <img className="sugg-dp" src="" />
-                    </a>
-                  </div>
-                  <div className="col-6">
-                    <div className="sp-row">
-                      <a
-                        className="normalize-link"
-                        href=""
-                        style={{ fontSize: "15px" }}
+              <div className="main-sugg mt-4">
+                {Object.keys(this.state.userSuggestions).length === 0
+                  ? "No Suggestions"
+                  : Object.keys(this.state.userSuggestions).map((item) => (
+                      <div
+                        className="sugg-item row mt-2"
+                        key={this.state.userSuggestions[item].username}
                       >
-                        <b></b>
-                      </a>
-                    </div>
-                    <div className="sp-row"></div>
-                  </div>
-                  <div
-                    className="col-3 flex-v-center"
-                    style={{ textAlign: "center", fontSize: "13px" }}
-                  >
-                    <a className="blue normalize-link sugg-follow" id="">
-                      Follow
-                    </a>
-                  </div>
-                </div>
+                        <div className="col-3">
+                          <a
+                            href={
+                              "/" + this.state.userSuggestions[item].username
+                            }
+                          >
+                            <img
+                              className="sugg-icon"
+                              src={this.state.userSuggestions[item].dp_url}
+                              alt=""
+                            />
+                          </a>
+                        </div>
+                        <div className="col-9 sugg-username">
+                          <a
+                            className="link"
+                            href={
+                              "/" + this.state.userSuggestions[item].username
+                            }
+                          >
+                            <b>{this.state.userSuggestions[item].username}</b>
+                          </a>
+                        </div>
+                      </div>
+                    ))}
               </div>
             </div>
           </div>
