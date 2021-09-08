@@ -40,10 +40,10 @@ class App extends Component {
           <Route exact path="/">
             <Feed />
           </Route>
-          <Route path="/post/:postId">
+          <Route exact path="/post/:postId">
             <Post />
           </Route>
-          <Route path="/profile/:userId">
+          <Route exact path="/profile/:userId">
             <Profile />
           </Route>
 

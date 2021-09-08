@@ -90,6 +90,7 @@ def password_reset_request(request):
 
 def login_view(request):
     if request.method == "POST":
+        print("post")
         if request.is_ajax():
             login_data = json.loads(request.body)
             username_email = login_data["username"]
@@ -111,6 +112,7 @@ def login_view(request):
         else:
             return HttpResponse("Page Not Found")
     if request.method == "GET":
+        print("get")
         if request.user.is_authenticated:
             return redirect("/")
         else:

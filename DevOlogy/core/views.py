@@ -2,31 +2,37 @@ from django.shortcuts import render, redirect, HttpResponse
 from .models import Post
 import json
 from django.core import serializers
+from django.contrib.auth import get_user_model
 # Create your views here.
 
 MAX = 1000
-posts_per_page = 21 # Actually 20
+posts_per_page = 1 # Actually 20
+
+def checkLogin(user):
+    return user.is_authenticated 
+
 
 def feed(request):
-    following = request.user.get_user_following
-    following.append(request.user)
-    posts = []
-    counter = 0
-    for user in following:
-        for post in list(Post.objects.prefetch_related().filter(user=user)):
-            if counter >= MAX:
-                break
-            else:
-                posts.append(post)
-                counter += 1
+    if request.method == "POST":
+        following = request.user.get_user_following
+        following.append(request.user)
+        posts = []
+        counter = 0
+        for user in following:
+            for post in list(Post.objects.prefetch_related().filter(user=user)):
+                if counter >= MAX:
+                    break
+                else:
+                    posts.append(post)
+                    counter += 1
 
-    posts.sort(key=lambda x: x.posted_on, reverse=True)
+        posts.sort(key=lambda x: x.posted_on, reverse=True)
 
     if request.method == 'GET':
-        if request.user.is_authenticated:
+        if checkLogin(request.user):
             return render(request, 'frontend/index.html')
         else:
-            return redirect('/login/')
+            return redirect('login/')
     elif request.method == "POST":
         if request.is_ajax():
             page = json.loads(request.body.decode())['page']
@@ -52,14 +58,14 @@ def feed(request):
         
 
 def post(request, post_id):
-    if request.user.is_authenticated:
+    if checkLogin(request.user):
         return render(request, 'frontend/index.html')
     else:
         return redirect('login/')
     
 
 def profile(request, username):
-    if request.user.is_authenticated:
+    if checkLogin(request.user):
         return render(request, 'frontend/index.html')
     else:
         return redirect('login/')

@@ -1,7 +1,7 @@
 body{width: 100vw;height: 100vh;background-color: whitesmoke !important; overflow-x: hidden;}
 input{text-align: center;}
 input:focus{text-align: left; outline: 1.5px solid black;}
-.white-box{background-color: white !important;}
+.white-box{background-color: white !important;width:40%; min: height 400px;}
 .flex-h-center{display: flex;flex-direction: column;justify-content: flex-start;align-items: center;}
 .logo-c{min-height: 70px; margin-top: 4%;}
 .form{min-height: 180px;}
@@ -26,6 +26,7 @@ input:focus{text-align: left; outline: 1.5px solid black;}
   margin-top: 4px;
   margin-bottom: 4px;
 }
+.cntr{display: flex;flex-direction: column;}
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
@@ -42,3 +43,7 @@ input:-webkit-autofill {
     border: 1px solid black
 
   }
+
+  @media screen and (max-width: 600px) {
+    .white-box{min-width: 98vw}
+}

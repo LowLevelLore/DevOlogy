@@ -89,7 +89,7 @@ export default class Login extends Component {
   render() {
     return (
       <div className="main">
-        <div className="container">
+        <div className="cntr">
           <div className="white-box flex-h-center" id="main">
             <div className="container-fluid logo-c flex-h-center">
               <img id="logo" src="/static/images/written-logo.png" alt="" />
@@ -111,6 +111,7 @@ export default class Login extends Component {
                     type="text"
                     value={this.state.username_email}
                     name="username_email"
+                    autoComplete="username"
                     onChange={this.handleUsernameChange}
                     placeholder={this.state.email_placeholder}
                     className={`form-content validate ${
@@ -129,6 +130,7 @@ export default class Login extends Component {
                   <input
                     type="password"
                     name="password"
+                    autoComplete="current-password"
                     value={this.state.password}
                     onChange={this.handlePasswordChange}
                     placeholder={this.state.password_placeholder}
@@ -198,7 +200,7 @@ export default class Login extends Component {
           </div>
           <div
             className="white-box flex-h-center"
-            style={{ textAlign: "center" }}
+            style={{ textAlign: "center" , height: "auto"}}
             id="signup"
           >
             <div>

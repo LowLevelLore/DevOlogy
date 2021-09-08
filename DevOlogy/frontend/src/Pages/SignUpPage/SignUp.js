@@ -206,7 +206,7 @@ export default class SignUp extends Component {
 
   render() {
     return (
-      <div className="container">
+      <div className="cntr">
         
         <div className="white-box flex-h-center" id="main">
           <div className="container-fluid logo-c flex-h-center">
@@ -223,6 +223,7 @@ export default class SignUp extends Component {
                   id="email"
                   type="email"
                   name="email"
+                  autoComplete="off"
                   value={this.state.email}
                   onChange={this.handleEmailChange}
                   placeholder={this.state.email_placeholder}
@@ -255,6 +256,7 @@ export default class SignUp extends Component {
                   id="username"
                   type="text"
                   name="username"
+                  autoComplete="off"
                   value={this.state.username}
                   onChange={this.handleUserNameChange}
                   placeholder={this.state.username_placeholder}
@@ -297,6 +299,7 @@ export default class SignUp extends Component {
                   id="name"
                   type="text"
                   name="full_name"
+                  autoComplete="off"
                   value={this.state.name}
                   onChange={this.handleNameChange}
                   placeholder={this.state.name_placeholder}
@@ -326,6 +329,7 @@ export default class SignUp extends Component {
                 <input
                   type="password"
                   name="password"
+                  autoComplete="off"
                   value={this.state.password}
                   onChange={this.handlePasswordChange}
                   placeholder={this.state.password_placeholder}

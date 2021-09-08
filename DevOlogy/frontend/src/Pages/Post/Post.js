@@ -1,16 +1,22 @@
-import React, { Component } from 'react'
-import "./Post.css"
+import React, { useState, useEffect } from 'react';
 
-export default class Post extends Component {
-    constructor(props){
-        super(props);
-        this.state = {};
-    }
-    render() {
-        return (
-            <div>
-                {this.props.username}
-            </div>
-        )
-    }
+
+function Post(props) {
+    const [image, setImage] = useState(props.imagePath)
+    const [likes, setLikes] = useState({})
+    const [comments, setComments] = useState({})
+    const [requestUserHasLiked, setRequestUserHasLiked] = useState({})
+    useEffect(() => {
+        return () => {
+            
+        }
+    }, [])
+    return (
+        <div className="post">
+            
+        </div>
+    )
 }
+
+export default Post
+

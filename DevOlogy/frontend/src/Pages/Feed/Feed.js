@@ -35,7 +35,7 @@ export default class Feed extends Component {
     this.getUserSuggestions();
     this.getPosts();
   }
-
+  
   setUserData = (data) => {
     this.setState({ requestUserData: data });
   };
@@ -55,7 +55,9 @@ export default class Feed extends Component {
       .then((data) => {
         this.setState({ userSuggestions: data.response });
       });
-  }
+  };
+
+  
 
   getPosts = async () => {
     await fetch("/", {
@@ -67,16 +69,30 @@ export default class Feed extends Component {
         "X-CSRFToken": getCookie("csrftoken"),
       },
       credentials: "include",
-      body: JSON.stringify({page: this.state.page})
-    }).then((response) => response.json()).then(data => {
-      if (data.stop){
-        this.setState({posts: [...this.state.posts, ...Object.values(data.response)], hasMore: data.hasMore})
-      }
-      else{
-        this.setState({posts: [...this.state.posts, ...Object.values(data.response)], hasMore: data.has_more, page: this.state.page+1})
-      }
+      body: JSON.stringify({ page: this.state.page }),
     })
-  }
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.stop) {
+          this.setState(
+            {
+              posts: [...this.state.posts, ...Object.values(data.response)],
+              hasMore: data.hasMore,
+            },
+            
+          );
+        } else {
+          this.setState(
+            {
+              posts: [...this.state.posts, ...Object.values(data.response)],
+              hasMore: data.has_more,
+              page: this.state.page + 1,
+            },
+            
+          );
+        }
+      });
+  };
 
   render() {
     return (
@@ -84,7 +100,39 @@ export default class Feed extends Component {
         <Navbar setUserData={this.setUserData} />
         <div className="content">
           <div className="main-content">
-            
+            <InfiniteScroll
+              dataLength={this.state.posts.length}
+              next={this.getPosts}
+              hasMore={this.state.hasMore}
+              loader={<h4>Loading...</h4>}
+              endMessage={
+                <p style={{ textAlign: "center" }}>
+                  <b>Yay! You have seen it all</b>
+                </p>
+              }
+              height={800}
+              refreshFunction={() => {
+                console.log("refreshed");
+              }}
+              pullDownToRefresh
+              pullDownToRefreshThreshold={50}
+              pullDownToRefreshContent={
+                <h3 style={{ textAlign: "center" }}>
+                  &#8595; Pull down to refresh
+                </h3>
+              }
+              releaseToRefreshContent={
+                <h3 style={{ textAlign: "center" }}>
+                  &#8593; Release to refresh
+                </h3>
+              }
+            >
+              
+                {this.state.posts.map(post => (
+                  <Post post={post} key={post.custom_id} requestUser={this.state.requestUserData}/>
+    ))}
+              
+            </InfiniteScroll>
           </div>
           <div className="suggestions">
             <div className="personalinfo row mt-4">

@@ -1,7 +1,7 @@
 body{width: 100vw;height: 100vh;background-color: whitesmoke !important; overflow-x: hidden;}
 input{text-align: center;}
 input:focus{text-align: left; outline: 1.5px solid black;}
-.white-box{background-color: white !important;}
+.white-box{background-color: white !important; width: 40% !important; min-width:400px}
 .flex-h-center{display: flex;flex-direction: column;justify-content: flex-start;align-items: center;}
 .logo-c{min-height: 70px; margin-top: 4%;}
 .form{min-height: 180px;}
@@ -17,12 +17,13 @@ input:focus{text-align: left; outline: 1.5px solid black;}
 .normalize-link:visited{text-decoration: none; color: blue;}
 #signup{margin-top: 15px !important; max-width: 400px; margin: 5% auto 0 auto; padding: 5px 10px}
 .fb-btn{margin-left: 8%;}
+.cntr{
+    display: flex;flex-direction: column;
+}
 .err{font-size: 15px; color: red; outline-color: red !important; outline-width: 2px !important;}
 .form-content-inp{width: 100% !important; height:100% !important; display: block; height: 100%;}
 .form-cf{width: 60% !important;min-height:40px ; margin-top: 12px;}
-
+#main{margin-top: 11% !important;margin: 11% auto 0 auto !important;min-height: 350px;max-width: 400px;}
 @media screen and (max-width: 600px) {
-    /* .fb-btn{
-        margin-left: 17px;
-    } */
+    .white-box{min-width: 98vw}
 }
