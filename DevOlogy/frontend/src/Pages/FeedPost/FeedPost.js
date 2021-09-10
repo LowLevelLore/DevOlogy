@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./Post.css";
+import "./FeedPost.css";
 import ReactReadMoreReadLess from "react-read-more-read-less";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,44 +11,29 @@ import {
   faHeart as faHeartFilled,
   faBookmark as faBookmarkFilled,
 } from "@fortawesome/free-solid-svg-icons";
-import { asyncFetchRequest, fetchRequest } from "../../../helpers/fetchRequest";
+import { fetchRequest } from "../../../helpers/fetchRequest";
+import { nFormatter } from "../../../helpers/numbers";
 
-function Post(props) {
+function FeedPost(props) {
   const [likes, setLikes] = useState(0);
-  const [comments, setComments] = useState({});
+  const [timeDiff, setTimeDiff] = useState("0");
   const [requestUserHasLiked, setRequestUserHasLiked] = useState(false);
   const [requestUserHasBookmarked, setRequestUserHasBookmarked] =
     useState(false);
-  const knowRequestUserHasLiked = async () => {
+  const getDetails = async () => {
     fetchRequest({
-      path_: "/api/knowIfPostWasLiked/",
+      path_: "/api/knowPostLikesAndBookmarks/",
       method: "POST",
       body: { custom_id: props.postData.custom_id },
       next: (data) => {
-        setRequestUserHasLiked(data.response);
+        setRequestUserHasLiked(data.response.wasLiked);
+        setRequestUserHasBookmarked(data.response.wasBookmarked);
+        setLikes(data.response.likes);
+        setTimeDiff(data.response.time_diff);
       },
     });
   };
-  const knowRequestUserHasBookmarked = async () => {
-    fetchRequest({
-      path_: "/api/knowIfPostWasBookmarked/",
-      method: "POST",
-      body: { custom_id: props.postData.custom_id },
-      next: (data) => {
-        setRequestUserHasBookmarked(data.response);
-      },
-    });
-  };
-  const getPostLikes = async () => {
-    fetchRequest({
-      path_: "/api/getPostLikes/",
-      method: "POST",
-      body: { custom_id: props.postData.custom_id },
-      next: (data) => {
-        setLikes(data.response);
-      },
-    });
-  };
+
   const toggleLike = () => {
     if (requestUserHasLiked) {
       removeLike();
@@ -122,9 +107,7 @@ function Post(props) {
     }
   };
   useEffect(() => {
-    knowRequestUserHasBookmarked();
-    knowRequestUserHasLiked();
-    getPostLikes();
+    getDetails();
   }, []);
   return (
     <div className="post my-2">
@@ -175,8 +158,14 @@ function Post(props) {
                 style={{ marginRight: "10px" }}
               />
             )}
-            <FontAwesomeIcon icon={faComment} size={"2x"} />
-            <p>{likes}</p>
+            <FontAwesomeIcon
+              icon={faComment}
+              size={"2x"}
+              onClick={() => {
+                window.location.pathname =
+                  "/post/" + props.postData.custom_id + "/";
+              }}
+            />
           </div>
           <div className="right">
             {requestUserHasBookmarked ? (
@@ -196,15 +185,23 @@ function Post(props) {
             )}
           </div>
         </div>
+        <div className="container-fluid mx-1 d-flex">
+          <div className="left">{nFormatter(likes)} likes</div>
+          <div className="right" style={{ fontSize: "12px", marginTop: "3px" }}>
+            {timeDiff}
+          </div>
+        </div>
         <div className="container-fluid">
           <a
-            style={{ fontSize: "14px", marginLeft: "3px" }}
+            style={{ fontSize: "15px", marginLeft: "3px" }}
             className="link"
             href={"/" + props.postData.username}
           >
             <b>{props.postData.username}</b>
           </a>
-          <div style={{ fontSize: "14px", marginLeft: "3px" }}>
+          <div
+            style={{ fontSize: "15px", marginLeft: "3px", marginBottom: "5px" }}
+          >
             <ReactReadMoreReadLess
               charLimit={window.innerWidth > 700 ? 100 : 50}
               readMoreText={"Read More"}
@@ -219,4 +216,4 @@ function Post(props) {
   );
 }
 
-export default Post;
+export default FeedPost;

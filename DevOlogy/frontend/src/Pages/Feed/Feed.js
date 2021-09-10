@@ -2,10 +2,9 @@ import React, { Component } from "react";
 import "./Feed.css";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Navbar from "../../components/Navbar/Navbar";
-import Post from "../Post/Post";
+import FeedPost from "../FeedPost/FeedPost";
 import Loader from "react-loader-spinner";
-import getCookie from "../../../helpers/getCookie";
-import { syncFetchRequest, fetchRequest } from "../../../helpers/fetchRequest";
+import { fetchRequest } from "../../../helpers/fetchRequest";
 
 function MyLoader() {
   return (
@@ -94,7 +93,7 @@ export default class Feed extends Component {
               height={800}
             >
               {this.state.posts.map((post) => (
-                <Post
+                <FeedPost
                   key={post.custom_id}
                   postData={post}
                   requestUser={this.state.requestUserData}

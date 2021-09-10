@@ -1,11 +1,8 @@
-import datetime
-from django.shortcuts import render, redirect
 import json
 from django.http import HttpResponse
-from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 import re
-from django.conf.urls import url
 from core.models import Post, Bookmark, PostLike
 # Create your views here.
 
@@ -132,35 +129,25 @@ def getUserSuggestions(request):
     else:
         return HttpResponse("Page Not Found") # TODO
 
-def knowIfPostWasLiked(request):
+def knowPostLikesAndBookmarks(request):
     if request.method == 'POST':
         if request.is_ajax():
-            t1 = datetime.datetime.now()
+            
             post_id = json.loads(request.body.decode('utf-8'))["custom_id"]
-            t2 = datetime.datetime.now()
-            print('t1 => ', t2-t1)
-            response = Post.objects.prefetch_related().get(custom_id=post_id).was_liked_by_current_user()
-            t3 = datetime.datetime.now()
-            print('t2 => ', t3-t2)
+            post = Post.objects.prefetch_related().get(custom_id=post_id)
+            response = {}
+            response['wasLiked'] = post.was_liked_by_current_user()
+            response['wasBookmarked'] = post.was_bookmarked_by_current_user()
+            response['time_diff'] = post.get_time_diff()
+            response['likes'] = post.get_post_likes_length
             response_data = json.dumps({'response': response})
             mimetype = 'application/json'
-            t4 = datetime.datetime.now()
-            print('t3 => ', t4-t3)
-            print(t4-t1)
+            
             return HttpResponse(response_data, mimetype)
     else:
         return HttpResponse("Page Not Found") # TODO
 
-def knowIfPostWasBookmarked(request):
-    if request.method == 'POST':
-        if request.is_ajax():
-            post_id = json.loads(request.body.decode('utf-8'))["custom_id"]
-            response = Post.objects.get(custom_id=post_id).was_bookmarked_by_current_user()
-            response_data = json.dumps({'response': response})
-            mimetype = 'application/json'
-            return HttpResponse(response_data, mimetype)
-    else:
-        return HttpResponse("Page Not Found") # TODO
+
 
 def addLike(request):
     if request.method == 'POST':
@@ -244,17 +231,21 @@ def removeBookmark(request):
     else:
         return HttpResponse("Page Not Found") # TODO
 
-def getPostLikes(request):
+
+def getPostData(request):
     if request.method == 'POST':
         if request.is_ajax():
-            post_id = json.loads(request.body.decode('utf-8'))["custom_id"]
-            try:
-                post = Post.objects.prefetch_related().get(custom_id=post_id)
-                response = post.get_post_likes_length
-            except:
-                response = 0
+            post_id = json.loads(request.body)['custom_id']
+            post = Post.objects.prefetch_related().get(custom_id=post_id)
+            response = {}
+            response['time_diff'] = post.get_time_diff()
+            response['likes'] = post.get_post_likes_length
+            response['comments'] = post.get_post_comments
+            response['wasLiked'] = post.was_liked_by_current_user()
+            response['wasBookmarked'] = post.was_bookmarked_by_current_user()
             response_data = json.dumps({'response': response})
             mimetype = 'application/json'
             return HttpResponse(response_data, mimetype)
+            
     else:
         return HttpResponse("Page Not Found") # TODO

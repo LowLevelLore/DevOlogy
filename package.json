@@ -40,6 +40,7 @@
     "outline-icons": "^1.31.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-error-overlay": "^6.0.9",
     "react-icons": "^4.2.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-loader-spinner": "^4.0.0",

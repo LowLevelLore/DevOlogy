@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from .views import (knowIfLoggedIn, isUserNameAvailable, isEmailAvailable, getRequestUserInfo, getSearchResults,
-                    getUserSuggestions, knowIfPostWasLiked, knowIfPostWasBookmarked, addLike, removeLike, addBookmark, removeBookmark, getPostLikes)
+                    getUserSuggestions, knowPostLikesAndBookmarks,  addLike, removeLike, addBookmark, removeBookmark, getPostData)
 
 urlpatterns = [
     path('isLoggedIn/', knowIfLoggedIn),
@@ -10,11 +10,10 @@ urlpatterns = [
     path('getRequestUserInfo/', getRequestUserInfo),
     path("getSearchResults/", getSearchResults),
     path("getUserSuggestions/", getUserSuggestions),
-    path("knowIfPostWasLiked/", knowIfPostWasLiked),
-    path("knowIfPostWasBookmarked/", knowIfPostWasBookmarked),
+    path("knowPostLikesAndBookmarks/", knowPostLikesAndBookmarks),
     path("addLike/", addLike),
     path("removeLike/", removeLike),
     path("addBookmark/", addBookmark),
     path("removeBookmark/", removeBookmark),
-    path("getPostLikes/", getPostLikes)
+    path("getPostData/", getPostData)
 ]

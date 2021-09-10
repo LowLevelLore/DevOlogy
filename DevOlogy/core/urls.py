@@ -4,6 +4,6 @@ from .views import feed, post, profile
 
 urlpatterns = [
     path('', feed),
-    path('post/<str:post_id>', post),
+    path('post/<str:post_id>/', post),
     path('profile/<str:username>/', profile),
 ]

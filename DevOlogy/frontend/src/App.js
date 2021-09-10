@@ -4,10 +4,10 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import regeneratorRuntime from "regenerator-runtime";
 import Feed from "./Pages/Feed/Feed";
 import Login from "./Pages/LoginPage/Login";
-import Post from "./Pages/Post/Post";
 import Profile from "./Pages/Profile/Profile";
 import SignUp from "./Pages/SignUpPage/SignUp";
 import { syncFetchRequest } from "../helpers/fetchRequest";
+import SingleTonPost from './Pages/SingleTonPost/SingleTonPost.js'
 class App extends Component {
   constructor() {
     super();
@@ -35,7 +35,7 @@ class App extends Component {
             <Feed />
           </Route>
           <Route exact path="/post/:postId">
-            <Post />
+            <SingleTonPost/>
           </Route>
           <Route exact path="/profile/:userId">
             <Profile />
