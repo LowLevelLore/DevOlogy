@@ -244,20 +244,14 @@ class PostLike(models.Model):
     def __str__(self):
         return str(f'{str(self.user_who_liked_the_post)} --> {str(self.post)}')
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(self,*args, **kwargs):
         if self.custom_id == '' or self.custom_id is None:
             self.custom_id = make_custom_string_as_id('PostLike')
-        already_liked = False
-        prev_likes_of_user = self.user_who_liked_the_post.get_user_likes_on_posts
-        for like in prev_likes_of_user:
-            if like.post == self.post:
-                already_liked = True
-        if already_liked:
-            pass
-        else:
-            super(PostLike, self).save(force_insert=force_insert, force_update=force_update,
-                                       using=using, update_fields=update_fields)
+        try:
+            PostLike.objects.prefetch_related().get(user_who_liked_the_post= self.user_who_liked_the_post)
+        
+        except:
+            super(PostLike, self).save(*args, **kwargs)
 
 
 class CommentLike(models.Model):
@@ -270,20 +264,14 @@ class CommentLike(models.Model):
     def __str__(self):
         return str(f'{str(self.user_who_liked_the_comment)} --> {str(self.comment)}')
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(self, *args, **kwargs):
         if self.custom_id == '' or self.custom_id is None:
             self.custom_id = make_custom_string_as_id('CommentLike')
-        already_liked = False
-        prev_likes_of_user = self.user_who_liked_the_comment.get_user_likes_on_comments
-        for like in prev_likes_of_user:
-            if like.comment == self.comment:
-                already_liked = True
-        if already_liked:
-            pass
-        else:
-            super(CommentLike, self).save(force_insert=force_insert, force_update=force_update,
-                                          using=using, update_fields=update_fields)
+        try:
+            CommentLike.objects.prefetch_related().get(user_who_liked_the_comment= self.user_who_liked_the_comment)
+        
+        except:
+            super(CommentLike, self).save(*args, **kwargs)
 
 
 class Follow(models.Model):
@@ -297,24 +285,14 @@ class Follow(models.Model):
     def __str__(self):
         return str(f'{str(self.user_who_followed)} --> {str(self.user_who_was_followed)}')
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(self, *args, **kwargs):
         if self.custom_id == '' or self.custom_id is None:
             self.custom_id = make_custom_string_as_id('Follow')
-        already_followed = False
-        user_who_followed_prev_following = self.user_who_followed.get_user_following
-        for user in user_who_followed_prev_following:
-            if user == self.user_who_was_followed:
-                already_followed = True
+        try:
+            Follow.objects.prefetch_related().get(user_who_followed=self.user_who_followed, user_who_was_followed=self.user_who_was_followed)
         
-        if already_followed:
-            pass
-        else:
-            if self.user_who_was_followed == self.user_who_followed:
-                pass
-            else:
-                super(Follow, self).save(force_insert=force_insert, force_update=force_update,
-                                         using=using, update_fields=update_fields)
+        except:
+            super(Follow, self).save(*args, **kwargs)
 
 
 class Bookmark(models.Model):

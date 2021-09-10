@@ -16,7 +16,7 @@ const defaultCredentials = "same-origin";
  * @param {string} credentials - include or same-origin
  * @param {function} next - Called after the request, with data as parameter.
  */
-async function asyncFetchRequest({
+async function syncFetchRequest({
   path_,
   headers = defaultHeaders,
   body,
