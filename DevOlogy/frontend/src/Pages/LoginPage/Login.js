@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./Login.css";
-import { asyncFetchRequest } from "../../../helpers/fetchRequest";
+import { syncFetchRequest } from "../../../helpers/fetchRequest";
 const email_placeholder = "Email Or Username";
 const password_placeholder = "Password";
 
@@ -44,7 +44,7 @@ export default class Login extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     if (this.isDataValid()) {
-      asyncFetchRequest({
+      syncFetchRequest({
         path_: "/login/",
         method: "POST",
         body: {

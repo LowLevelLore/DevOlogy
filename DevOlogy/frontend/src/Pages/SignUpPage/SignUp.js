@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./SignUp.css";
 import getCookie from "../../../helpers/getCookie";
-import { asyncFetchRequest, fetchRequest } from "../../../helpers/fetchRequest";
+import { syncFetchRequest, fetchRequest } from "../../../helpers/fetchRequest";
 
 const email_placeholder = "Email";
 const username_placeholder = "Username";
@@ -42,7 +42,7 @@ export default class SignUp extends Component {
         canSubmit: false,
       });
     } else {
-      asyncFetchRequest({
+      syncFetchRequest({
         path_: "/api/isEmailAvailable/",
         method: "POST",
         body: {
@@ -68,7 +68,7 @@ export default class SignUp extends Component {
         canSubmit: false,
       });
     } else {
-      asyncFetchRequest({
+      syncFetchRequest({
         path_: "/api/isUserNameAvailable/",
         method: "POST",
         body: {
@@ -155,7 +155,7 @@ export default class SignUp extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     this.setState({ canSubmit: false });
-    asyncFetchRequest({
+    syncFetchRequest({
       path_: "/signup/",
       method: "POST",
       body: {

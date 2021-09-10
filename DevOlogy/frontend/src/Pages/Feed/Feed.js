@@ -5,7 +5,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import Post from "../Post/Post";
 import Loader from "react-loader-spinner";
 import getCookie from "../../../helpers/getCookie";
-import { asyncFetchRequest, fetchRequest } from "../../../helpers/fetchRequest";
+import { syncFetchRequest, fetchRequest } from "../../../helpers/fetchRequest";
 
 function MyLoader() {
   return (

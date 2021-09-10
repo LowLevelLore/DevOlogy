@@ -7,7 +7,7 @@ import Login from "./Pages/LoginPage/Login";
 import Post from "./Pages/Post/Post";
 import Profile from "./Pages/Profile/Profile";
 import SignUp from "./Pages/SignUpPage/SignUp";
-import { asyncFetchRequest } from "../helpers/fetchRequest";
+import { syncFetchRequest } from "../helpers/fetchRequest";
 class App extends Component {
   constructor() {
     super();
@@ -18,7 +18,7 @@ class App extends Component {
     this.knowIfLoggedIn();
   }
   knowIfLoggedIn() {
-    asyncFetchRequest({
+    syncFetchRequest({
       path_: "/api/isLoggedIn/",
       method: "POST",
       next: (data) => {

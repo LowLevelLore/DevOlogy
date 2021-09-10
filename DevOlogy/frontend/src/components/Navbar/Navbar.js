@@ -8,6 +8,7 @@ import {
   faHeart,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import { syncFetchRequest, fetchRequest } from "../../../helpers/fetchRequest";
 
 const searchInputPlaceholder = "Search";
 function getCookie(name) {
@@ -41,52 +42,40 @@ export default class Navbar extends Component {
       isMouseInside: false,
       searchResults: {},
       showSearchHere: true,
-      isActivityActive: window.location.pathname.startsWith('/activity'),
-      isExploreActive: window.location.pathname.startsWith('/explore'),
-      isHomeActive: window.location.pathname === '/',
-      isMessengerActive: window.location.pathname.startsWith('/chat'),
-      isProfileActive: window.location.pathname.startsWith('/profile'),
+      isActivityActive: window.location.pathname.startsWith("/activity"),
+      isExploreActive: window.location.pathname.startsWith("/explore"),
+      isHomeActive: window.location.pathname === "/",
+      isMessengerActive: window.location.pathname.startsWith("/chat"),
+      isProfileActive: window.location.pathname.startsWith("/profile"),
     };
   }
   getSearchResults = async () => {
-    await fetch("/api/getSearchResults/", {
+    syncFetchRequest({
+      path_: "/api/getSearchResults/",
       method: "POST",
-      credentials: "same-origin",
-      headers: {
-        Accept: "application/json",
-        "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
-        "X-CSRFToken": getCookie("csrftoken"),
-      },
-      credentials: "include",
-      body: JSON.stringify({
+      body: {
         query: this.state.searchValue,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
+      },
+      next: (data) => {
         this.setState(
           { searchResults: data.response.response },
           this.renderSearchResults
         );
-      });
+      },
+    });
   };
   getRequestUserInfo = async () => {
-    await fetch("/api/getRequestUserInfo/", {
+    syncFetchRequest({
+      path_: "/api/getRequestUserInfo/",
       method: "POST",
-      credentials: "same-origin",
-      headers: {
-        Accept: "application/json",
-        "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
-        "X-CSRFToken": getCookie("csrftoken"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
+      next: (data)=>{
         this.setState({ requestUserData: data.response }, () => {
           this.props.setUserData(data.response);
         });
         return data.response;
-      });
+      }
+    })
+    
   };
   renderSearchResults = () => {};
   componentDidMount() {
@@ -152,7 +141,9 @@ export default class Navbar extends Component {
               {/* <img className="icon" src="/static/svgs/messenger.png" alt="" /> */}
               <FontAwesomeIcon
                 icon={faComments}
-                color={this.state.isMessengerActive ? activeColour : normalColour}
+                color={
+                  this.state.isMessengerActive ? activeColour : normalColour
+                }
                 size={"2x"}
               />
             </div>
@@ -168,7 +159,9 @@ export default class Navbar extends Component {
               {/* <img className="icon" src="/static/svgs/heart.svg" alt="" /> */}
               <FontAwesomeIcon
                 icon={faHeart}
-                color={this.state.isActivityActive ? activeColour : normalColour}
+                color={
+                  this.state.isActivityActive ? activeColour : normalColour
+                }
                 size={"2x"}
               />
             </div>
@@ -181,7 +174,9 @@ export default class Navbar extends Component {
               {this.state.requestUserData.dp_url === "/static/svgs/user.png" ? (
                 <FontAwesomeIcon
                   icon={faUser}
-                  color={this.state.isProfileActive ? activeColour : normalColour}
+                  color={
+                    this.state.isProfileActive ? activeColour : normalColour
+                  }
                   size={"2x"}
                 />
               ) : (

@@ -64,4 +64,4 @@ async function fetchRequest({
     });
 }
 
-export { fetchRequest, asyncFetchRequest };
+export { fetchRequest, syncFetchRequest };
