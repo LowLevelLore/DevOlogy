@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from django.db import models
 from django.contrib.auth import get_user_model
@@ -13,10 +14,32 @@ import random
 
 max_links = 3
 id_length = 20
+MAX = 2000
 
 
 def get_post_upload_path(instance, filename):
     return instance.get_upload_path(filename)
+
+def get_post_list():
+    following = get_current_user().get_user_following
+    following.append(get_current_user())
+    posts = []
+    counter = 0
+    for user in following:
+        print(user)
+        for post in list(Post.objects.prefetch_related().filter(user=user)):
+                if counter >= MAX:
+                    break
+                else:
+                    posts.append(post)
+                    counter += 1
+
+    posts.sort(key=lambda x: x.posted_on, reverse=True)
+    response = {}
+    for i in posts:
+                response[i.custom_id] = {'user_dp': i.user.get_dp_path, 'custom_id': i.custom_id, 'username': i.user.username, 'picture': i.picture.url, 'caption': i.caption, 'posted_on': str(i.posted_on)}
+    print(json.dumps(response))
+    return json.dumps(response)
 
 
 def make_custom_string_as_id(instance):
@@ -36,6 +59,8 @@ def make_custom_string_as_id(instance):
         instance = Bookmark
     elif instance == 'FollowRequest':
         instance = FollowRequest
+    elif instance == "PostList":
+        instance = PostList
     else:
         return None
 
@@ -53,7 +78,7 @@ class Post(models.Model):
     custom_id = models.CharField(max_length=id_length, unique=True, null=False, editable=False, blank=False)
     picture = models.ImageField(upload_to=get_post_upload_path, null=False, blank=False)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='users_posts')
-    caption = models.CharField(max_length=400, null=True, blank=True, default='')
+    caption = models.CharField(max_length=1000, null=True, blank=True, default='')
     posted_on = models.DateTimeField(auto_now_add=True)
     edited_on = models.DateTimeField(auto_now=True)
 
@@ -73,14 +98,14 @@ class Post(models.Model):
         """
         :return: all the comments related to the particular post
         """
-        return list(self.posts_comments.all())
+        return list(self.posts_comments.prefetch_related().all())
 
     @property
     def get_post_comments_length(self) -> int:
         """
         :return: the number of comments associated with that particular post
         """
-        return len(list(self.posts_comments.all()))
+        return len(list(self.posts_comments.prefetch_related().all()))
 
     @property
     def get_post_likes(self) -> list:
@@ -88,14 +113,14 @@ class Post(models.Model):
         :return: all the likes related to the particular post
         I know it will not be useful , but.....
         """
-        return list(self.post_likes.all())
+        return list(self.post_likes.prefetch_related().all())
 
     @property
     def get_post_likes_length(self) -> int:
         """
         :return: the number of likes associated with that particular post
         """
-        return len(list(self.post_likes.all()))
+        return len(list(self.post_likes.prefetch_related().all()))
 
     def get_time_diff(self):
         """
@@ -128,7 +153,7 @@ class Post(models.Model):
 
     def was_liked_by_current_user(self):
         try:
-            PostLike.objects.get(post=self, user_who_liked_the_post=get_current_user())
+            PostLike.objects.select_related('post').prefetch_related().get(post=self, user_who_liked_the_post=get_current_user())
 
             return True
         except ex.ObjectDoesNotExist:
@@ -136,13 +161,12 @@ class Post(models.Model):
 
     def was_bookmarked_by_current_user(self):
         try:
-            Bookmark.objects.get(post=self, user=get_current_user())
+            Bookmark.objects.select_related('post').prefetch_related().get(post=self, user=get_current_user())
             return True
         except:
             return False
 
-    def get_mini_caption(self):
-        return self.caption[0:50] + '...'
+    
 
 
 class Link(models.Model):
@@ -282,7 +306,7 @@ class Follow(models.Model):
         for user in user_who_followed_prev_following:
             if user == self.user_who_was_followed:
                 already_followed = True
-
+        
         if already_followed:
             pass
         else:
@@ -319,7 +343,7 @@ class FollowRequest(models.Model):
     request_was_accepted = models.BooleanField()
 
     def save(self, *args, **kwargs):
-        qs = FollowRequest.objects.filter(user_who_requested=self.user_who_requested,
+        qs = FollowRequest.objects.prefetch_related().filter(user_who_requested=self.user_who_requested,
                                           user_who_was_requested=self.user_who_was_requested)
         if len(qs) == 0:
             if self.custom_id == '' or self.custom_id is None:
@@ -333,5 +357,20 @@ class FollowRequest(models.Model):
             follow.save()
         super(FollowRequest, self).delete(*args, **kwargs)
 
+class PostList(models.Model):
+    custom_id = models.CharField(max_length=id_length, null=False, editable=False, blank=False, unique=True)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='user')
+    updated_on = models.DateTimeField(auto_now_add=True)
+    post_list = models.JSONField()
 
+    def save(self, *args, **kwargs):
+        self.user = get_current_user()
+        self.post_list = get_post_list()
+        self.custom_id = make_custom_string_as_id("PostList")
+        PostList.objects.prefetch_related().filter(user=self.user).delete()
+        
+        super(PostList, self).save(*args, **kwargs)
+    
+    def delete(self, *args, **kwargs):
+        super(FollowRequest, self).delete(*args, **kwargs)
 

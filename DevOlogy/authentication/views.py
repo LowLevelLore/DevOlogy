@@ -18,6 +18,9 @@ from django.contrib.sites.shortcuts import get_current_site
 from .tokens import email_confirmation_token
 from django.core.mail import send_mail
 from .models import InactiveUser
+from django.views.decorators.csrf import ensure_csrf_cookie
+
+
 
 
 USER_MODEL = get_user_model()
@@ -27,7 +30,7 @@ INACTIVE_USER_MODEL = InactiveUser
 def fb_login_view(request):
     pass
 
-
+@ensure_csrf_cookie
 def log_out_view(request):
     if request.method == "POST":
         logout(request)
@@ -36,7 +39,7 @@ def log_out_view(request):
         logout(request)  # REMOVE AFTERWARDS
         pass
 
-
+@ensure_csrf_cookie
 def password_reset_request(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -87,10 +90,9 @@ def password_reset_request(request):
         context={"password_reset_form": password_reset_form},
     )
 
-
+@ensure_csrf_cookie
 def login_view(request):
     if request.method == "POST":
-        print("post")
         if request.is_ajax():
             login_data = json.loads(request.body)
             username_email = login_data["username"]
@@ -100,6 +102,7 @@ def login_view(request):
             except:
                 email = username_email
                 user = authenticate(email=email, password=password)
+                print(user)
             if user:
                 login(request, user)
                 isSuccessful = True
@@ -120,7 +123,7 @@ def login_view(request):
     else:
         pass  # Error 404 Page To Be Created
 
-
+@ensure_csrf_cookie
 def sign_up_view(request):
     if request.method == "POST":
         if request.is_ajax():
@@ -170,6 +173,7 @@ def sign_up_view(request):
 def user_data_deletion(request):
     pass
 
+@ensure_csrf_cookie
 def activate(request, uidb64, token):
     pass_ = request.session["password"]
     request.session["password"] = ""

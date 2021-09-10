@@ -6,9 +6,25 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 import string
 import random
 from django.contrib.auth.hashers import make_password
+import shutil
 
 
 id_length = 20
+
+
+
+def delete_folder(folder):
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
+    os.rmdir(folder)
+
 
 def make_custom_user_id():
     satisfied = False
@@ -90,15 +106,21 @@ class User(AbstractBaseUser):
             self.custom_id = make_custom_user_id()
         try:
             this = User.objects.get(pk=self.pk)
-            if this.display_picture != self.display_picture:
-                this.display_picture.delete(save=False)
+            # if this.display_picture != self.display_picture:
+            this.display_picture.delete(save=False)
         except:
             pass  # when new photo then we do nothing, normal case
         super(User, self).save(*args, **kwargs)
+    
+    def delete(self,*args, **kwargs):
+        print(os.getcwd())
+        delete_folder(f'media/UserSpecific/{self.email}/')
+        super(User, self).delete(*args, **kwargs)
+
 
     def get_dp_upload_path(self, filename):
 
-        return f'UserSpecific/{self.email}/DisplayPicture/{str(datetime.datetime.now())}.jpg'
+        return f'UserSpecific/{self.email}/DisplayPicture/{str(datetime.datetime.now())}.webp'
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"

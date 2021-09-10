@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Link, Comment, PostLike, CommentLike, Follow, Bookmark, FollowRequest
+from .models import Post, Link, Comment, PostLike, CommentLike, Follow, Bookmark, FollowRequest, PostList
 
 # Register your models here.
 
@@ -31,7 +31,7 @@ class CommentLikeAdmin(admin.ModelAdmin):
 
 class FollowAdmin(admin.ModelAdmin):
     fields = ('user_who_was_followed', 'user_who_followed')
-    list_display = ('user_who_was_followed', 'user_who_followed')
+    list_display = ('custom_id', 'followed_on')
 
 
 class BookmarkAdmin(admin.ModelAdmin):
@@ -52,3 +52,4 @@ admin.site.register(CommentLike, CommentLikeAdmin)
 admin.site.register(Follow, FollowAdmin)
 admin.site.register(Bookmark, BookmarkAdmin)
 admin.site.register(FollowRequest, FollowRequestAdmin)
+admin.site.register(PostList)

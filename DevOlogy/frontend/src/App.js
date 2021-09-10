@@ -7,7 +7,7 @@ import Login from "./Pages/LoginPage/Login";
 import Post from "./Pages/Post/Post";
 import Profile from "./Pages/Profile/Profile";
 import SignUp from "./Pages/SignUpPage/SignUp";
-
+import { asyncFetchRequest } from "../helpers/fetchRequest";
 class App extends Component {
   constructor() {
     super();
@@ -17,20 +17,14 @@ class App extends Component {
   UNSAFE_componentWillMount() {
     this.knowIfLoggedIn();
   }
-  // Store in state
-  async knowIfLoggedIn() {
-    await fetch("/api/isLoggedIn", {
-      headers: {
-        Accept: "application/json",
-        "X-Requested-With": "XMLHttpRequest",
+  knowIfLoggedIn() {
+    asyncFetchRequest({
+      path_: "/api/isLoggedIn/",
+      method: "POST",
+      next: (data) => {
+        this.setState({ isLoggedIn: data.result === "True" ? true : false });
       },
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((json) => {
-        this.setState({ isLoggedIn: json.result === "True" ? true : false });
-      });
+    });
   }
 
   render() {

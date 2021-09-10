@@ -1,26 +1,12 @@
 import React, { Component } from "react";
 import "./SignUp.css";
+import getCookie from "../../../helpers/getCookie";
+import { asyncFetchRequest, fetchRequest } from "../../../helpers/fetchRequest";
 
 const email_placeholder = "Email";
 const username_placeholder = "Username";
 const name_placeholder = "Name";
 const password_placeholder = "Password";
-
-function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== "") {
-    const cookies = document.cookie.split(";");
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      // Does this cookie string begin with the name we want?
-      if (cookie.substring(0, name.length + 1) === name + "=") {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
-}
 
 export default class SignUp extends Component {
   constructor() {
@@ -56,27 +42,21 @@ export default class SignUp extends Component {
         canSubmit: false,
       });
     } else {
-      await fetch("/api/isEmailAvailable/", {
+      asyncFetchRequest({
+        path_: "/api/isEmailAvailable/",
         method: "POST",
-        credentials: "same-origin",
-        headers: {
-          Accept: "application/json",
-          "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
-          "X-CSRFToken": getCookie("csrftoken"),
-        },
-        body: JSON.stringify({
+        body: {
           email: this.state.email,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
+        },
+        next: (data) => {
           if (data.response) {
             this.setState({ isEmailValid: true, showEmailError: false });
           } else if (!data.response) {
             this.setState({ isEmailValid: false, showEmailError: true });
           }
           this.toggleCanSubmit();
-        });
+        },
+      });
     }
   };
 
@@ -88,31 +68,30 @@ export default class SignUp extends Component {
         canSubmit: false,
       });
     } else {
-      await fetch("/api/isUserNameAvailable/", {
+      asyncFetchRequest({
+        path_: "/api/isUserNameAvailable/",
         method: "POST",
-        credentials: "same-origin",
-        headers: {
-          Accept: "application/json",
-          "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
-          "X-CSRFToken": getCookie("csrftoken"),
-        },
-        body: JSON.stringify({
+        body: {
           username: this.state.username,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.response) {
-            this.setState({ isUserNameValid: true, showUserNameError: false });
-          } else if (!data.response) {
-            this.setState({
-              isUserNameValid: false,
-              showUserNameError: true,
-              userNameError: data.error,
-            });
+        },
+        next: (data) => {
+          {
+            if (data.response) {
+              this.setState({
+                isUserNameValid: true,
+                showUserNameError: false,
+              });
+            } else if (!data.response) {
+              this.setState({
+                isUserNameValid: false,
+                showUserNameError: true,
+                userNameError: data.error,
+              });
+            }
+            this.toggleCanSubmit();
           }
-          this.toggleCanSubmit();
-        });
+        },
+      });
     }
   };
 
@@ -175,39 +154,32 @@ export default class SignUp extends Component {
   };
   handleSubmit = async (e) => {
     e.preventDefault();
-    this.setState({canSubmit: false})
-    await fetch("/signup/", {
+    this.setState({ canSubmit: false });
+    asyncFetchRequest({
+      path_: "/signup/",
       method: "POST",
-      credentials: "same-origin",
-      headers: {
-        Accept: "application/json",
-        "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
-        "X-CSRFToken": getCookie("csrftoken"),
-      },
-      credentials: "include",
-      body: JSON.stringify({
+      body: {
         email: this.state.email,
         name: this.state.name,
         username: this.state.username,
         password: this.state.password,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.code === 200){
-          this.setState({message: "An activation link has been sent to your email ID"})
+      },
+      next: (data) => {
+        if (data.code === 200) {
+          this.setState({
+            message: "An activation link has been sent to your email ID",
+          });
+        } else if (data.code === 401) {
+          this.setState({ message: "An error occured please try again later" });
+        } else {
         }
-        else if (data.code === 401){
-          this.setState({message: "An error occured please try again later"})
-        }
-        else{}
-      });
+      },
+    });
   };
 
   render() {
     return (
       <div className="cntr">
-        
         <div className="white-box flex-h-center" id="main">
           <div className="container-fluid logo-c flex-h-center">
             <img id="logo" src="/static/images/written-logo.png" alt="" />
@@ -229,7 +201,10 @@ export default class SignUp extends Component {
                   placeholder={this.state.email_placeholder}
                   className="form-content"
                   onFocus={() => {
-                    this.setState({ email_placeholder: "" }, this.validateEmail);
+                    this.setState(
+                      { email_placeholder: "" },
+                      this.validateEmail
+                    );
                   }}
                   onBlur={() => {
                     this.setState(
@@ -393,8 +368,9 @@ export default class SignUp extends Component {
                 className="form-content"
                 href="/auth/social-core/login/facebook/"
               >
-                <button className="btn btn-primary"
-                disabled={true}>Login with Facebook</button>
+                <button className="btn btn-primary" disabled={true}>
+                  Login with Facebook
+                </button>
               </a>
             </div>
           </div>

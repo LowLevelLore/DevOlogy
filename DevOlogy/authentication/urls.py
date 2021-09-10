@@ -21,4 +21,5 @@ urlpatterns = [
     path('fb/user-data-deletion/', user_data_deletion),
     path('fb/login/done', fb_login_view),
     path('activate_account/<uidb64>/<token>/', activate, name="activate"),
+    
 ]

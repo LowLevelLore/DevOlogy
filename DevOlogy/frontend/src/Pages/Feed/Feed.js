@@ -3,21 +3,24 @@ import "./Feed.css";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Navbar from "../../components/Navbar/Navbar";
 import Post from "../Post/Post";
+import Loader from "react-loader-spinner";
+import getCookie from "../../../helpers/getCookie";
+import { asyncFetchRequest, fetchRequest } from "../../../helpers/fetchRequest";
 
-function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== "") {
-    const cookies = document.cookie.split(";");
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      // Does this cookie string begin with the name we want?
-      if (cookie.substring(0, name.length + 1) === name + "=") {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
+function MyLoader() {
+  return (
+    <div className="text-center">
+      <Loader
+        type="TailSpin"
+        color="blue"
+        height={30}
+        width={30}
+        timeout={3000}
+        id="loader"
+        style={{ margin: "auto" }}
+      />
+    </div>
+  );
 }
 
 export default class Feed extends Component {
@@ -35,63 +38,41 @@ export default class Feed extends Component {
     this.getUserSuggestions();
     this.getPosts();
   }
-  
+
   setUserData = (data) => {
     this.setState({ requestUserData: data });
   };
 
   getUserSuggestions = async () => {
-    await fetch("/api/getUserSuggestions/", {
+    fetchRequest({
+      path_: "/api/getUserSuggestions/",
       method: "POST",
-      credentials: "same-origin",
-      headers: {
-        Accept: "application/json",
-        "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
-        "X-CSRFToken": getCookie("csrftoken"),
-      },
-      credentials: "include",
-    })
-      .then((response) => response.json())
-      .then((data) => {
+      next: (data) => {
         this.setState({ userSuggestions: data.response });
-      });
+      },
+    });
   };
 
-  
-
   getPosts = async () => {
-    await fetch("/", {
+    fetchRequest({
+      path_: "/",
       method: "POST",
-      credentials: "same-origin",
-      headers: {
-        Accept: "application/json",
-        "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
-        "X-CSRFToken": getCookie("csrftoken"),
-      },
-      credentials: "include",
-      body: JSON.stringify({ page: this.state.page }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
+      body: { page: this.state.page },
+      next: (data) => {
         if (data.stop) {
-          this.setState(
-            {
-              posts: [...this.state.posts, ...Object.values(data.response)],
-              hasMore: data.hasMore,
-            },
-            
-          );
+          this.setState({
+            posts: [...this.state.posts, ...Object.values(data.response)],
+            hasMore: data.hasMore,
+          });
         } else {
-          this.setState(
-            {
-              posts: [...this.state.posts, ...Object.values(data.response)],
-              hasMore: data.has_more,
-              page: this.state.page + 1,
-            },
-            
-          );
+          this.setState({
+            posts: [...this.state.posts, ...Object.values(data.response)],
+            hasMore: data.has_more,
+            page: this.state.page + 1,
+          });
         }
-      });
+      },
+    });
   };
 
   render() {
@@ -104,34 +85,21 @@ export default class Feed extends Component {
               dataLength={this.state.posts.length}
               next={this.getPosts}
               hasMore={this.state.hasMore}
-              loader={<h4>Loading...</h4>}
+              loader={<MyLoader />}
               endMessage={
                 <p style={{ textAlign: "center" }}>
-                  <b>Yay! You have seen it all</b>
+                  <b>You are all caught up !</b>
                 </p>
               }
               height={800}
-              refreshFunction={() => {
-                console.log("refreshed");
-              }}
-              pullDownToRefresh
-              pullDownToRefreshThreshold={50}
-              pullDownToRefreshContent={
-                <h3 style={{ textAlign: "center" }}>
-                  &#8595; Pull down to refresh
-                </h3>
-              }
-              releaseToRefreshContent={
-                <h3 style={{ textAlign: "center" }}>
-                  &#8593; Release to refresh
-                </h3>
-              }
             >
-              
-                {this.state.posts.map(post => (
-                  <Post post={post} key={post.custom_id} requestUser={this.state.requestUserData}/>
-    ))}
-              
+              {this.state.posts.map((post) => (
+                <Post
+                  key={post.custom_id}
+                  postData={post}
+                  requestUser={this.state.requestUserData}
+                />
+              ))}
             </InfiniteScroll>
           </div>
           <div className="suggestions">
@@ -162,62 +130,60 @@ export default class Feed extends Component {
                 </div>
               </div>
             </div>
-            <div className="sugg mt-3">
-              <div className="row">
-                <div
-                  className="col-8"
-                  style={{
-                    textAlign: "left",
-                    fontWeight: 600,
-                    color: "rgb(133, 133, 133)",
-                  }}
-                >
-                  Suggestions for you
+            {Object.keys(this.state.userSuggestions).length === 0 ? (
+              ""
+            ) : (
+              <div className="sugg mt-3">
+                <div className="row">
+                  <div
+                    className="col-8"
+                    style={{
+                      textAlign: "left",
+                      fontWeight: 600,
+                      color: "rgb(133, 133, 133)",
+                    }}
+                  >
+                    Suggestions for you
+                  </div>
+                  <div
+                    className="col-4 flex-v-center"
+                    style={{ fontSize: "13px" }}
+                  >
+                    <a href="/explore/suggested/" className="normalize-link">
+                      <b>See All</b>
+                    </a>
+                  </div>
                 </div>
-                <div
-                  className="col-4 flex-v-center"
-                  style={{ fontSize: "13px" }}
-                >
-                  <a href="/explore/suggested/" className="normalize-link">
-                    <b>See All</b>
-                  </a>
-                </div>
-              </div>
-              <div className="main-sugg mt-4">
-                {Object.keys(this.state.userSuggestions).length === 0
-                  ? "No Suggestions"
-                  : Object.keys(this.state.userSuggestions).map((item) => (
-                      <div
-                        className="sugg-item row mt-2"
-                        key={this.state.userSuggestions[item].username}
-                      >
-                        <div className="col-3">
-                          <a
-                            href={
-                              "/" + this.state.userSuggestions[item].username
-                            }
-                          >
-                            <img
-                              className="sugg-icon"
-                              src={this.state.userSuggestions[item].dp_url}
-                              alt=""
-                            />
-                          </a>
-                        </div>
-                        <div className="col-9 sugg-username">
-                          <a
-                            className="link"
-                            href={
-                              "/" + this.state.userSuggestions[item].username
-                            }
-                          >
-                            <b>{this.state.userSuggestions[item].username}</b>
-                          </a>
-                        </div>
+                <div className="main-sugg mt-4">
+                  {Object.keys(this.state.userSuggestions).map((item) => (
+                    <div
+                      className="sugg-item row mt-2"
+                      key={this.state.userSuggestions[item].username}
+                    >
+                      <div className="col-3">
+                        <a
+                          href={"/" + this.state.userSuggestions[item].username}
+                        >
+                          <img
+                            className="sugg-icon"
+                            src={this.state.userSuggestions[item].dp_url}
+                            alt=""
+                          />
+                        </a>
                       </div>
-                    ))}
+                      <div className="col-9 sugg-username">
+                        <a
+                          className="link"
+                          href={"/" + this.state.userSuggestions[item].username}
+                        >
+                          <b>{this.state.userSuggestions[item].username}</b>
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </>

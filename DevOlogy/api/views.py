@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render, redirect
 import json
 from django.http import HttpResponse
@@ -5,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.db.models import Q
 import re
 from django.conf.urls import url
+from core.models import Post, Bookmark, PostLike
 # Create your views here.
 
 REGEX_FOR_EMAIL = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
@@ -130,4 +132,129 @@ def getUserSuggestions(request):
     else:
         return HttpResponse("Page Not Found") # TODO
 
+def knowIfPostWasLiked(request):
+    if request.method == 'POST':
+        if request.is_ajax():
+            t1 = datetime.datetime.now()
+            post_id = json.loads(request.body.decode('utf-8'))["custom_id"]
+            t2 = datetime.datetime.now()
+            print('t1 => ', t2-t1)
+            response = Post.objects.prefetch_related().get(custom_id=post_id).was_liked_by_current_user()
+            t3 = datetime.datetime.now()
+            print('t2 => ', t3-t2)
+            response_data = json.dumps({'response': response})
+            mimetype = 'application/json'
+            t4 = datetime.datetime.now()
+            print('t3 => ', t4-t3)
+            print(t4-t1)
+            return HttpResponse(response_data, mimetype)
+    else:
+        return HttpResponse("Page Not Found") # TODO
 
+def knowIfPostWasBookmarked(request):
+    if request.method == 'POST':
+        if request.is_ajax():
+            post_id = json.loads(request.body.decode('utf-8'))["custom_id"]
+            response = Post.objects.get(custom_id=post_id).was_bookmarked_by_current_user()
+            response_data = json.dumps({'response': response})
+            mimetype = 'application/json'
+            return HttpResponse(response_data, mimetype)
+    else:
+        return HttpResponse("Page Not Found") # TODO
+
+def addLike(request):
+    if request.method == 'POST':
+        if request.is_ajax():
+            post_id = json.loads(request.body.decode('utf-8'))["custom_id"]
+            try:
+                post = Post.objects.prefetch_related().get(custom_id=post_id)
+                try:
+                    PostLike.objects.prefetch_related().get(post=post, user_who_liked_the_post=request.user)
+                    response = 'Already Liked'
+                except:
+                    x = PostLike.objects.create(post=post, user_who_liked_the_post=request.user)
+                    x.save()
+                    response = 'Liked'
+            except:
+                response = 'No Post'
+            response_data = json.dumps({'response': response})
+            mimetype = 'application/json'
+            return HttpResponse(response_data, mimetype)
+    else:
+        return HttpResponse("Page Not Found") # TODO
+
+def removeLike(request):
+    if request.method == 'POST':
+        if request.is_ajax():
+            post_id = json.loads(request.body.decode('utf-8'))["custom_id"]
+            try:
+                post = Post.objects.prefetch_related().get(custom_id=post_id)
+                try:
+                    x = PostLike.objects.prefetch_related().get(post=post, user_who_liked_the_post=request.user)
+                    x.delete()
+                    response = 'Like Removed'
+                except:
+                    response = 'Already not Liked'
+            except:
+                response = 'No Post'
+            response_data = json.dumps({'response': response})
+            mimetype = 'application/json'
+            return HttpResponse(response_data, mimetype)
+    else:
+        return HttpResponse("Page Not Found") # TODO
+
+def addBookmark(request):
+    if request.method == 'POST':
+        if request.is_ajax():
+            post_id = json.loads(request.body.decode('utf-8'))["custom_id"]
+            try:
+                post = Post.objects.prefetch_related().get(custom_id=post_id)
+                try:
+                    Bookmark.objects.prefetch_related().get(post=post, user=request.user)
+                    response = 'Already Bookmarked'
+                except:
+                    x = Bookmark.objects.create(post=post, user=request.user)
+                    x.save()
+                    response = 'Bookmarked'
+            except:
+                response = 'No Post'
+            response_data = json.dumps({'response': response})
+            mimetype = 'application/json'
+            return HttpResponse(response_data, mimetype)
+    else:
+        return HttpResponse("Page Not Found") # TODO
+
+def removeBookmark(request):
+    if request.method == 'POST':
+        if request.is_ajax():
+            post_id = json.loads(request.body.decode('utf-8'))["custom_id"]
+            try:
+                post = Post.objects.prefetch_related().get(custom_id=post_id)
+                try:
+                    x = Bookmark.objects.prefetch_related().get(post=post, user=request.user)
+                    x.delete()
+                    response = 'Bookmark Removed'
+                except:
+                    response = 'Already not Bookmarked'
+            except:
+                response = 'No Post'
+            response_data = json.dumps({'response': response})
+            mimetype = 'application/json'
+            return HttpResponse(response_data, mimetype)
+    else:
+        return HttpResponse("Page Not Found") # TODO
+
+def getPostLikes(request):
+    if request.method == 'POST':
+        if request.is_ajax():
+            post_id = json.loads(request.body.decode('utf-8'))["custom_id"]
+            try:
+                post = Post.objects.prefetch_related().get(custom_id=post_id)
+                response = post.get_post_likes_length
+            except:
+                response = 0
+            response_data = json.dumps({'response': response})
+            mimetype = 'application/json'
+            return HttpResponse(response_data, mimetype)
+    else:
+        return HttpResponse("Page Not Found") # TODO

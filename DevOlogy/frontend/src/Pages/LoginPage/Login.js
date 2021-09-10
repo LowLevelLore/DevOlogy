@@ -1,22 +1,6 @@
 import React, { Component } from "react";
 import "./Login.css";
-
-// Just for getting CSRF
-function getCookie(name) {
-  var cookieValue = null;
-  if (document.cookie && document.cookie !== "") {
-    var cookies = document.cookie.split(";");
-    for (var i = 0; i < cookies.length; i++) {
-      var cookie = jQuery.trim(cookies[i]);
-      if (cookie.substring(0, name.length + 1) === name + "=") {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
-}
-
+import { asyncFetchRequest } from "../../../helpers/fetchRequest";
 const email_placeholder = "Email Or Username";
 const password_placeholder = "Password";
 
@@ -35,7 +19,6 @@ export default class Login extends Component {
     };
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    // this.handleSubmit = this.handleSubmit.bind(this);
     this.isDataValid = this.isDataValid.bind(this);
   }
   handleUsernameChange(e) {
@@ -59,33 +42,25 @@ export default class Login extends Component {
     return this.state.password.length >= 8;
   }
   handleSubmit = async (e) => {
-    console.log(getCookie("csrftoken"))
+    e.preventDefault();
     if (this.isDataValid()) {
-      e.preventDefault();
-      await fetch("/login/", {
+      asyncFetchRequest({
+        path_: "/login/",
         method: "POST",
-        credentials: "same-origin",
-        headers: {
-          Accept: "application/json",
-          "X-Requested-With": "XMLHttpRequest", //Necessary to work with request.is_ajax()
-          "X-CSRFToken": getCookie("csrftoken"),
-        },
-        credentials: "include",
-        body: JSON.stringify({
+        body: {
           username: this.state.username_email,
           password: this.state.password,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
+        },
+        next: (data) => {
           if (data.IsLoginSuccessful) {
             window.location.pathname = "/";
           } else {
             this.setState({ isPasswordValid: false, isUserNameValid: false });
           }
-        });
+        },
+      });
     }
-  }
+  };
   render() {
     return (
       <div className="main">
@@ -178,8 +153,7 @@ export default class Login extends Component {
                   className="form-content"
                   href="{% url 'social:begin' 'facebook' %}"
                 >
-                  <button className="btn btn-primary"
-                  disabled={true}>
+                  <button className="btn btn-primary" disabled={true}>
                     Login with Facebook
                   </button>
                 </a>
@@ -200,7 +174,7 @@ export default class Login extends Component {
           </div>
           <div
             className="white-box flex-h-center"
-            style={{ textAlign: "center" , height: "auto"}}
+            style={{ textAlign: "center", height: "auto" }}
             id="signup"
           >
             <div>

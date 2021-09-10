@@ -10,6 +10,7 @@
     height: calc(100vh - 44px);
     overflow-y: auto;
     width: 75%;
+    padding: 10px ;
 }
 
 .suggestions {
@@ -44,6 +45,37 @@
     background: #009eb3;
 }
 
+.infinite-scroll-component::-webkit-scrollbar {
+    width: 6px;
+    position: -webkit-sticky;
+    right: 0;
+    display: none;
+}
+
+.infinite-scroll-component::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 2px grey;
+    border-radius: 10px;
+}
+
+.infinite-scroll-component::-webkit-scrollbar-thumb {
+    background: rgb(7, 7, 7);
+    border-radius: 10px;
+}
+
+.infinite-scroll-component::-webkit-scrollbar-track:hover {
+    background: #009eb3;
+}
+
+.infinite-scroll-component_outerdiv{
+    width: 100%;
+    
+}
+.infinite-scroll-component_outerdiv::-webkit-scrollbar{display: none}
+.infinite-scroll-component{
+    width: 100%;
+    
+}
+
 .sugg-user-icon{
     width: 40px;
     height: 40px;
@@ -70,8 +102,23 @@
     justify-content: flex-start !important;
 }
 
+
 @media screen and (max-width: 990px) {
     .suggestions{
         display: none;
+    }
+    .main-content{
+        width: 100%;
+        padding: 0 2px;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .suggestions{
+        display: none;
+    }
+    .main-content{
+        width: 100%;
+        padding: 0 2%;
     }
 }
