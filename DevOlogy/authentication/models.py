@@ -122,7 +122,6 @@ class User(AbstractBaseUser):
 
 
     def get_dp_upload_path(self, filename):
-
         return f'UserSpecific/{self.email}/DisplayPicture/{str(datetime.datetime.now())}.webp'
 
     def has_perm(self, perm, obj=None):

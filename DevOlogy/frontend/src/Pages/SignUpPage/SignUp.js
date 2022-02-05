@@ -179,177 +179,193 @@ export default class SignUp extends Component {
 
   render() {
     return (
-      <div className="cntr">
-        <div className="white-box flex-h-center" id="main">
-          <div className="container-fluid logo-c flex-h-center">
-            <img id="logo" src="/static/images/written-logo.png" alt="" />
-          </div>
-          <div className="err">
-            <span id="err"></span>
-          </div>
-          <div className="container-fluid form flex-h-center">
-            <form method="post" className="container-fluid form flex-h-center">
-              <div className="container-fluid flex-v-center">
-                {" "}
-                <input
-                  id="email"
-                  type="email"
-                  name="email"
-                  autoComplete="off"
-                  value={this.state.email}
-                  onChange={this.handleEmailChange}
-                  placeholder={this.state.email_placeholder}
-                  className="form-content"
-                  onFocus={() => {
-                    this.setState(
-                      { email_placeholder: "" },
-                      this.validateEmail
-                    );
-                  }}
-                  onBlur={() => {
-                    this.setState(
-                      {
-                        email_placeholder: email_placeholder,
-                      },
-                      this.validateEmail
-                    );
-                  }}
-                />
-                <div
-                  className="form-content-err"
-                  id="email-err"
-                  style={{
-                    display: `${!this.state.showEmailError ? "none" : "block"}`,
-                  }}
-                >
-                  <img src="/static/images/error.png" width="100%" />
-                </div>
-              </div>
-              <div className="container-fluid flex-v-center">
-                {" "}
-                <input
-                  id="username"
-                  type="text"
-                  name="username"
-                  autoComplete="off"
-                  value={this.state.username}
-                  onChange={this.handleUserNameChange}
-                  placeholder={this.state.username_placeholder}
-                  className="form-content"
-                  onFocus={() => {
-                    this.setState({ username_placeholder: "" });
-                  }}
-                  onBlur={() => {
-                    this.setState(
-                      {
-                        username_placeholder: username_placeholder,
-                      },
-                      this.validateUserName
-                    );
-                  }}
-                />
-                <div
-                  className="form-content-err"
-                  id="username-err"
-                  style={{
-                    display: `${
-                      !this.state.showUserNameError ? "none" : "block"
-                    }`,
-                  }}
-                >
-                  <img src="/static/images/error.png" width="100%" />
-                </div>
-              </div>
-              <div
-                className="container-fluid flex-v-center small-error"
-                style={{
-                  display: `${this.state.showUserNameError ? "flex" : "none"}`,
-                }}
-              >
-                {this.state.userNameError}
-              </div>
-              <div className="container-fluid flex-v-center">
-                {" "}
-                <input
-                  id="name"
-                  type="text"
-                  name="full_name"
-                  autoComplete="off"
-                  value={this.state.name}
-                  onChange={this.handleNameChange}
-                  placeholder={this.state.name_placeholder}
-                  className="form-content"
-                  onFocus={() => {
-                    this.setState({ name_placeholder: "" });
-                  }}
-                  onBlur={() => {
-                    this.setState(
-                      { name_placeholder: name_placeholder },
-                      this.validateName
-                    );
-                  }}
-                />
-                <div
-                  className="form-content-err"
-                  id="name-err"
-                  style={{
-                    display: `${!this.state.showNameError ? "none" : "block"}`,
-                  }}
-                >
-                  <img src="/static/images/error.png" width="100%" />
-                </div>
-              </div>
-              <div className="container-fluid flex-v-center">
-                {" "}
-                <input
-                  type="password"
-                  name="password"
-                  autoComplete="off"
-                  value={this.state.password}
-                  onChange={this.handlePasswordChange}
-                  placeholder={this.state.password_placeholder}
-                  className="form-content"
-                  onFocus={() => {
-                    this.setState({ password_placeholder: "" });
-                  }}
-                  onBlur={() => {
-                    this.setState(
-                      {
-                        password_placeholder: password_placeholder,
-                      },
-                      this.validatePassword
-                    );
-                  }}
-                  id="password"
-                />
-                <div
-                  id="pass-err"
-                  className="form-content-err"
-                  style={{
-                    display: `${
-                      !this.state.showPasswordError ? "none" : "block"
-                    }`,
-                  }}
-                >
-                  <img src="/static/images/error.png" width="100%" />
-                </div>
-              </div>
-              <button
-                type="submit"
-                className="btn btn-primary form-content"
-                id="sub-btn"
-                disabled={!this.state.canSubmit}
-                onClick={this.handleSubmit}
-              >
-                Sign Up
-              </button>
-            </form>
-            <div className="container my-2 fs-8 text-center">
-              {this.state.message}
+      <div className="main">
+        <div className="cntr">
+          <div className="white-box flex-h-center" id="main">
+            <div className="container-fluid logo-c flex-h-center">
+              <img id="logo" src="/static/images/written-logo.png" alt="" />
             </div>
-          </div>
-          <div className="container-fluid extras">
-            <div className="row mt-2">
+            <div className="container-fluid form flex-h-center">
+              <form
+                onSubmit={this.handleSubmit}
+                method="post"
+                className="container-fluid form flex-h-center"
+              >
+                <div className="container-fluid flex-h-center">
+                  <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    autoComplete="on"
+                    value={this.state.email}
+                    onChange={this.handleEmailChange}
+                    placeholder={this.state.email_placeholder}
+                    className="form-content"
+                    onFocus={() => {
+                      this.setState(
+                        { email_placeholder: "" },
+                        this.validateEmail
+                      );
+                    }}
+                    onBlur={() => {
+                      this.setState(
+                        {
+                          email_placeholder: email_placeholder,
+                        },
+                        this.validateEmail
+                      );
+                    }}
+                  />
+                  <div
+                    className="form-error"
+                    id="email-err"
+                    style={{
+                      display: `${
+                        !this.state.showEmailError ? "none" : "block"
+                      }`,
+                    }}
+                  >
+                    <img src="/static/images/error.png" width="100%" />
+                  </div>
+                </div>
+                <div className="container-fluid flex-h-center">
+                  <input
+                    id="username"
+                    type="text"
+                    name="username"
+                    autoComplete="on"
+                    value={this.state.username}
+                    onChange={this.handleUserNameChange}
+                    placeholder={this.state.username_placeholder}
+                    className="form-content"
+                    onFocus={() => {
+                      this.setState(
+                        { username_placeholder: "" },
+                        this.validateUserName
+                      );
+                    }}
+                    onBlur={() => {
+                      this.setState(
+                        {
+                          username_placeholder: username_placeholder,
+                        },
+                        this.validateUserName
+                      );
+                    }}
+                  />
+                  <div
+                    className="form-error"
+                    id="username-err"
+                    style={{
+                      display: `${
+                        !this.state.showUserNameError ? "none" : "block"
+                      }`,
+                    }}
+                  >
+                    <img src="/static/images/error.png" width="100%" />
+                  </div>
+                </div>
+                <div
+                  className="container-fluid flex-v-center small-error"
+                  style={{
+                    display: `${
+                      this.state.showUserNameError ? "flex" : "none"
+                    }`,
+                  }}
+                >
+                  {this.state.userNameError}
+                </div>
+                <div className="container-fluid flex-h-center">
+                  <input
+                    id="name"
+                    type="text"
+                    name="name"
+                    autoComplete="on"
+                    value={this.state.name}
+                    onChange={this.handleNameChange}
+                    placeholder={this.state.name_placeholder}
+                    className="form-content"
+                    onFocus={() => {
+                      this.setState(
+                        { name_placeholder: "" },
+                        this.validateName
+                      );
+                    }}
+                    onBlur={() => {
+                      this.setState(
+                        {
+                          name_placeholder: name_placeholder,
+                        },
+                        this.validateName
+                      );
+                    }}
+                  />
+                  <div
+                    className="form-error"
+                    id="name-err"
+                    style={{
+                      display: `${
+                        !this.state.showNameError ? "none" : "block"
+                      }`,
+                    }}
+                  >
+                    <img src="/static/images/error.png" width="100%" />
+                  </div>
+                </div>
+                <div className="container-fluid flex-h-center">
+                  <input
+                    id="password"
+                    type="password"
+                    name="password"
+                    autoComplete="off"
+                    value={this.state.password}
+                    onChange={this.handlePasswordChange}
+                    placeholder={this.state.password_placeholder}
+                    className="form-content"
+                    onFocus={() => {
+                      this.setState(
+                        { password_placeholder: "" },
+                        this.validatePassword
+                      );
+                    }}
+                    onBlur={() => {
+                      this.setState(
+                        {
+                          password_placeholder: password_placeholder,
+                        },
+                        this.validatePassword
+                      );
+                    }}
+                  />
+                  <div
+                    className="form-error"
+                    id="password-err"
+                    style={{
+                      display: `${
+                        !this.state.showPasswordError ? "none" : "block"
+                      }`,
+                    }}
+                  >
+                    <img src="/static/images/error.png" width="100%" />
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  className="btn btn-primary form-content"
+                  id="sub-btn"
+                  disabled={!this.state.canSubmit}
+                  onClick={this.handleSubmit}
+                  style={{ marginTop: "12px" }}
+                >
+                  Sign Up
+                </button>
+              </form>
+              <div className="container my-2 fs-8 text-center">
+                {this.state.message}
+              </div>
+            </div>
+            <div className="container-fluid extras">
+              <div className="row mt-2">
               <div className="col-5 flex-v-center">
                 <hr width="100%" />
               </div>
@@ -362,8 +378,8 @@ export default class SignUp extends Component {
               <div className="col-5 flex-v-center">
                 <hr width="100%" />
               </div>
-            </div>
-            <div className="fb-btn flex-v-center container-fluid flex-v-center">
+              </div>
+              <div className="fb-btn flex-v-center container-fluid flex-v-center">
               <a style={{textAlign: "center"}}
                 className="form-content"
                 href="/auth/social-core/login/facebook/"
@@ -373,9 +389,9 @@ export default class SignUp extends Component {
                 </button>
               </a>
             </div>
+            </div>
           </div>
-        </div>
-        <div
+          <div
           className="white-box flex-h-center"
           style={{ textAlign: "center" }}
           id="signup"
@@ -390,6 +406,7 @@ export default class SignUp extends Component {
               Log In
             </a>
           </div>
+        </div>
         </div>
       </div>
     );
