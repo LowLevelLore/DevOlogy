@@ -363,12 +363,12 @@ export default class SignUp extends Component {
                 <hr width="100%" />
               </div>
             </div>
-            <div className="fb-btn flex-v-center">
-              <a
+            <div className="fb-btn flex-v-center container-fluid flex-v-center">
+              <a style={{textAlign: "center"}}
                 className="form-content"
                 href="/auth/social-core/login/facebook/"
               >
-                <button className="btn btn-primary" disabled={true}>
+                <button  className="btn btn-primary" disabled={true}>
                   Login with Facebook
                 </button>
               </a>

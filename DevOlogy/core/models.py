@@ -67,8 +67,9 @@ def make_custom_string_as_id(instance):
     satisfied = False
     while not satisfied:
         custom_string = ''.join(random.choice(string.ascii_uppercase) for _ in range(id_length))
-        check_list = list(instance.objects.filter(custom_id=custom_string))
-        if len(check_list) == 0:
+        try:
+            (instance.objects.prefetch_related().get(custom_id=custom_string))
+        except :
             satisfied = True
 
     return custom_string
@@ -79,6 +80,7 @@ class Post(models.Model):
     picture = models.ImageField(upload_to=get_post_upload_path, null=False, blank=False)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='users_posts')
     caption = models.CharField(max_length=1000, null=True, blank=True, default='')
+    tag = models.CharField(max_length=70, null=True, blank=True, default='')
     posted_on = models.DateTimeField(auto_now_add=True)
     edited_on = models.DateTimeField(auto_now=True)
 
@@ -91,14 +93,18 @@ class Post(models.Model):
         return str(f'{str(self.user)} --> {self.pk}')
 
     def get_upload_path(self, filename):
-        return f'UserSpecific/{str(self.user)}/Posts/{str(datetime.datetime.now())}.jpg'
+        return f'UserSpecific/{str(self.user)}/Posts/{str(datetime.datetime.now())}.webp'
 
     @property
     def get_post_comments(self) -> list:
         """
         :return: all the comments related to the particular post
         """
-        return list(self.posts_comments.prefetch_related().all())
+        comments = self.posts_comments.prefetch_related().all()
+        resp = {}
+        for comment in comments:
+            resp[comment.custom_id] = {'time_diff': comment.get_time_diff(), 'text': comment.text, 'post_id':comment.related_post.custom_id, 'username': comment.user_who_commented.username, 'dp_path': comment.user_who_commented.get_dp_path, 'user_name': comment.user_who_commented.full_name}
+        return resp
 
     @property
     def get_post_comments_length(self) -> int:
@@ -130,15 +136,15 @@ class Post(models.Model):
         diff = now - self.posted_on
         td = float(diff.total_seconds())
         if 60 <= td < 3600:
-            response = f'{int(round(td / 60, 0))} MINUTES AGO'
+            response = f'{int(round(td / 60, 0))} mins'
         elif 3600 <= td < 86400:
-            response = f'{int(round((td / 3600), 0))} HOURS AGO'
+            response = f'{int(round((td / 3600), 0))} h'
         elif 86400 <= td < 2592000:
-            response = f'{int(round((td / 86400), 0))} DAYS AGO'
+            response = f'{int(round((td / 86400), 0))} d'
         elif 2592000 <= td < 31104000:
-            response = f'{int(round((td / 2592000), 0))} MONTHS AGO'
+            response = f'{int(round((td / 2592000), 0))} m'
         elif 31104000 <= td < 155520000:
-            response = f'{int(round((td / 31104000), 0))} YEARS AGO'
+            response = f'{int(round((td / 31104000), 0))} y'
         elif td >= 155520000:
             response = f'LONG TIME AGO ..'
         else:
@@ -205,10 +211,28 @@ class Comment(models.Model):
 
     def get_time_diff(self):
         """
-        :return: the time ago which post was posted ...
+        :return: the time ago which comment was posted ...
         """
-        diff = datetime.datetime.now() - self.commented_on
-        print(diff)
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        diff = now - self.commented_on
+        td = float(diff.total_seconds())
+        print(self.commented_on)
+        if 60 <= td < 3600:
+            response = f'{int(round(td / 60, 0))} mins'
+        elif 3600 <= td < 86400:
+            response = f'{int(round((td / 3600), 0))} h'
+        elif 86400 <= td < 2592000:
+            response = f'{int(round((td / 86400), 0))} d'
+        elif 2592000 <= td < 31104000:
+            response = f'{int(round((td / 2592000), 0))} m'
+        elif 31104000 <= td < 155520000:
+            response = f'{int(round((td / 31104000), 0))} y'
+        elif td >= 155520000:
+            response = f'LONG TIME AGO ..'
+        else:
+            response = f'JUST NOW'
+        return response
+
 
     @property
     def get_comment_likes(self) -> list:
@@ -245,11 +269,13 @@ class PostLike(models.Model):
         return str(f'{str(self.user_who_liked_the_post)} --> {str(self.post)}')
 
     def save(self,*args, **kwargs):
+        print("saving")
         if self.custom_id == '' or self.custom_id is None:
             self.custom_id = make_custom_string_as_id('PostLike')
         try:
-            PostLike.objects.prefetch_related().get(user_who_liked_the_post= self.user_who_liked_the_post)
-        
+            
+            PostLike.objects.prefetch_related().get(post=self.post, user_who_liked_the_post= self.user_who_liked_the_post)
+            print("postFound")
         except:
             super(PostLike, self).save(*args, **kwargs)
 

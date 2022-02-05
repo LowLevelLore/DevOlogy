@@ -7,6 +7,7 @@ import {
   faCompass,
   faHeart,
   faUser,
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { syncFetchRequest, fetchRequest } from "../../../helpers/fetchRequest";
 
@@ -120,7 +121,7 @@ export default class Navbar extends Component {
               <FontAwesomeIcon
                 icon={faHome}
                 color={this.state.isHomeActive ? activeColour : normalColour}
-                size={"2x"}
+                size={"lg"}
               />
             </div>
             <div className="icon-div">
@@ -130,27 +131,36 @@ export default class Navbar extends Component {
                 color={
                   this.state.isMessengerActive ? activeColour : normalColour
                 }
-                size={"2x"}
+                size={"lg"}
               />
             </div>
             <div className="icon-div">
-              {/* <img className="icon" src="/static/svgs/compass.png" alt="" /> */}
+            <FontAwesomeIcon
+                icon={faPlus}
+                color={
+                  this.state.isMessengerActive ? activeColour : normalColour
+                }
+                size={"lg"}
+              />
+            </div>
+            {/* <div className="icon-div">
+              <img className="icon" src="/static/svgs/compass.png" alt="" />
               <FontAwesomeIcon
                 icon={faCompass}
                 color={this.state.isExploreActive ? activeColour : normalColour}
-                size={"2x"}
+                size={"lg"}
               />
-            </div>
-            <div className="icon-div">
-              {/* <img className="icon" src="/static/svgs/heart.svg" alt="" /> */}
+            </div> */}
+            {/* <div className="icon-div">
+              <img className="icon" src="/static/svgs/heart.svg" alt="" />
               <FontAwesomeIcon
                 icon={faHeart}
                 color={
                   this.state.isActivityActive ? activeColour : normalColour
                 }
-                size={"2x"}
+                size={"lg"}
               />
-            </div>
+            </div> */}
             <div className="icon-div">
               {/* <img
                 className="icon"
@@ -163,7 +173,7 @@ export default class Navbar extends Component {
                   color={
                     this.state.isProfileActive ? activeColour : normalColour
                   }
-                  size={"2x"}
+                  size={"lg"}
                 />
               ) : (
                 <img

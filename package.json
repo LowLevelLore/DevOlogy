@@ -44,6 +44,7 @@
     "react-icons": "^4.2.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-loader-spinner": "^4.0.0",
+    "react-native-safe-area-context": "^3.3.2",
     "react-read-more-read-less": "^1.0.7",
     "react-responsive": "*",
     "react-router": "^5.2.1",

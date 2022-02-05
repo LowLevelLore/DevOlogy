@@ -1,4 +1,4 @@
-import random
+from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, response
@@ -9,8 +9,6 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes, force_text
 from DevOlogy.settings import WEBSITE_NAME, WEBSITE_DOMAIN, EMAIL_HOST_USER
 from django.contrib.auth import authenticate, login, logout, get_user_model
-from django.contrib.auth import views as default_views
-import threading
 import json
 from django.contrib.auth import get_user_model
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -19,8 +17,6 @@ from .tokens import email_confirmation_token
 from django.core.mail import send_mail
 from .models import InactiveUser
 from django.views.decorators.csrf import ensure_csrf_cookie
-
-
 
 
 USER_MODEL = get_user_model()
@@ -61,6 +57,7 @@ def password_reset_request(request):
                 "username": user.username,
                 "last": f"Team {WEBSITE_NAME} .",
             }
+
             email = render_to_string(email_template_name, c)
             try:
                 send_mail(
@@ -139,7 +136,9 @@ def sign_up_view(request):
                 current_site = get_current_site(request)
                 request.session["password"] = password
                 mail_subject = 'Activate your account.'
+                
                 message = render_to_string('html/email_template.html', {
+                            'name': name,
                             'protocol': 'https',
                             'user': user,
                             'domain': current_site.domain,
@@ -148,7 +147,11 @@ def sign_up_view(request):
                             "last": f"Team {WEBSITE_NAME} ."
                         })
                 to_email = email
-                send_mail(mail_subject, message, EMAIL_HOST_USER, [to_email])
+                
+                message = EmailMessage(mail_subject, message, EMAIL_HOST_USER, [to_email])
+                message.content_subtype = 'html' 
+                message.send()
+                
                 msg = "Mail Sent To Email"
                 code = 200
             else:

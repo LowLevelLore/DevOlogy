@@ -238,11 +238,12 @@ def getPostData(request):
             post_id = json.loads(request.body)['custom_id']
             post = Post.objects.prefetch_related().get(custom_id=post_id)
             response = {}
+            response['post_image'] = post.picture.url
             response['time_diff'] = post.get_time_diff()
             response['likes'] = post.get_post_likes_length
-            response['comments'] = post.get_post_comments
             response['wasLiked'] = post.was_liked_by_current_user()
             response['wasBookmarked'] = post.was_bookmarked_by_current_user()
+            response['user_data'] = {'username': post.user.username, 'dp_url': post.user.display_picture.url}
             response_data = json.dumps({'response': response})
             mimetype = 'application/json'
             return HttpResponse(response_data, mimetype)

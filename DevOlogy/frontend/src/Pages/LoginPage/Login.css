@@ -1,7 +1,7 @@
 body{width: 100vw;height: 100vh;background-color: whitesmoke !important; overflow-x: hidden;}
 input{text-align: center;}
 input:focus{text-align: left; outline: 1.5px solid black;}
-.white-box{background-color: white !important; width: 40% !important; min-width:400px}
+.white-box{background-color: white !important; width: 40% !important}
 .flex-h-center{display: flex;flex-direction: column;justify-content: flex-start;align-items: center;}
 .logo-c{min-height: 70px; margin-top: 4%;}
 .form{min-height: 180px;}

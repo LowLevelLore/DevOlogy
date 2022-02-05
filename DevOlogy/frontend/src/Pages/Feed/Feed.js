@@ -14,7 +14,7 @@ function MyLoader() {
         color="blue"
         height={30}
         width={30}
-        timeout={3000}
+        timeout={30000}
         id="loader"
         style={{ margin: "auto" }}
       />
@@ -115,7 +115,7 @@ export default class Feed extends Component {
               <div className="col-5 flex-h-center">
                 <div
                   className="row "
-                  style={{ fontSize: "19px", textAlign: "center" }}
+                  style={{ fontSize: "15px", textAlign: "center" }}
                 >
                   <a
                     href={"/" + this.state.requestUserData.username}

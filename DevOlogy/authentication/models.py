@@ -6,23 +6,26 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 import string
 import random
 from django.contrib.auth.hashers import make_password
-import shutil
+import glob
 
 
 id_length = 20
 
 
 
+def get_files(folder):
+    return glob.glob(folder)
+
 def delete_folder(folder):
-    for filename in os.listdir(folder):
-        file_path = os.path.join(folder, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
-        except Exception as e:
-            print('Failed to delete %s. Reason: %s' % (file_path, e))
+    files = get_files(folder+'/*')
+    print(files)
+    for file in files:
+        print(file)
+        if os.path.isdir(file):
+            print(file)
+            delete_folder(file)
+        else:
+            os.remove(file)
     os.rmdir(folder)
 
 
@@ -113,7 +116,7 @@ class User(AbstractBaseUser):
         super(User, self).save(*args, **kwargs)
     
     def delete(self,*args, **kwargs):
-        print(os.getcwd())
+        print('deleting')
         delete_folder(f'media/UserSpecific/{self.email}/')
         super(User, self).delete(*args, **kwargs)
 

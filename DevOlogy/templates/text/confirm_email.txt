@@ -1,6 +1,6 @@
 {% autoescape off %}
 
-Hello {{ name }},
+Dear Devology User {{ name }},
 We have recieved a request by your side to sign up to our website DevOlogy,
 
 The sole purpose of this email is to confirm that your email address is a valid email address. 
@@ -14,7 +14,7 @@ You can complete the sign-in process by clicking on the link given below :
 NOTE : IF THIS REQUEST WAS NOT MADE BY YOU PLEASE DON'T CLICK ON THE ABOVE LINK, THIS CAN BE A POTENTIAL
 	   IDENTITY THEFT ATTACK, & WE HAVE NOT SPENT A LOT OF RESOURCES ON THE SECURITY OF THIS WEBSITE.... 
 
-	   BE CALM YOUR ACCOUNT WILL ONLY BE CREATED ONCE YOU CLICK ON THE GIVEN LINK .
+	   YOUR ACCOUNT WILL ONLY BE CREATED ONCE YOU CLICK ON THE GIVEN LINK .
 
 
 Thank You, 

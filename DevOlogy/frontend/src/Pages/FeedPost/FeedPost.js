@@ -20,6 +20,8 @@ function FeedPost(props) {
   const [requestUserHasLiked, setRequestUserHasLiked] = useState(false);
   const [requestUserHasBookmarked, setRequestUserHasBookmarked] =
     useState(false);
+  const [canToggleLike, setCanToggleLike] = useState(true)
+  const [canToggleBookmark, setCanToggleBookmark] = useState(true)
   const getDetails = async () => {
     fetchRequest({
       path_: "/api/knowPostLikesAndBookmarks/",
@@ -49,7 +51,8 @@ function FeedPost(props) {
     }
   };
   const addLike = async () => {
-    if (!requestUserHasLiked) {
+    if (!requestUserHasLiked && canToggleLike) {
+      setCanToggleLike(false)
       fetchRequest({
         path_: "/api/addLike/",
         method: "POST",
@@ -58,13 +61,15 @@ function FeedPost(props) {
           if (data.response === "Liked") {
             setRequestUserHasLiked(true);
             setLikes(likes + 1);
+            setCanToggleLike(true)
           }
         },
       });
     }
   };
   const removeLike = async () => {
-    if (requestUserHasLiked) {
+    if (requestUserHasLiked && canToggleLike) {
+      setCanToggleLike(false)
       fetchRequest({
         path_: "/api/removeLike/",
         method: "POST",
@@ -73,13 +78,15 @@ function FeedPost(props) {
           if (data.response === "Like Removed") {
             setRequestUserHasLiked(false);
             setLikes(likes - 1);
+            setCanToggleLike(true)
           }
         },
       });
     }
   };
   const addBookmark = async () => {
-    if (!requestUserHasBookmarked) {
+    if (!requestUserHasBookmarked && canToggleBookmark) {
+      setCanToggleBookmark(false)
       fetchRequest({
         path_: "/api/addBookmark/",
         method: "POST",
@@ -87,13 +94,15 @@ function FeedPost(props) {
         next: (data) => {
           if (data.response === "Bookmarked") {
             setRequestUserHasBookmarked(true);
+            setCanToggleBookmark(true)
           }
         },
       });
     }
   };
   const removeBookmark = async () => {
-    if (requestUserHasBookmarked) {
+    if (requestUserHasBookmarked && canToggleBookmark) {
+      setCanToggleBookmark(false)
       fetchRequest({
         path_: "/api/removeBookmark/",
         method: "POST",
@@ -101,6 +110,7 @@ function FeedPost(props) {
         next: (data) => {
           if (data.response === "Bookmark Removed") {
             setRequestUserHasBookmarked(false);
+            setCanToggleBookmark(true)
           }
         },
       });

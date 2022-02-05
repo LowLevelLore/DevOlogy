@@ -1,11 +1,37 @@
 {% autoescape off %}
-Hello, 
-We have recieved a request to Make Your Account on our Social Media App, 
-this is a conformatory email to verify that the email address submitted 
-by you was legit, to activate your account please follow the link : 
-{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}
-
-Sincerely,
-{{last}}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0">
+        
+        <script src="/DevOlogy/static/required/bootstrap.js.map"></script>
+        <link rel="stylesheet" href="/DevOlogy/static/required/bootstrap.css.map">
+        
+    </head>
+<div>
+    <p>Hi Dear User,</p>
+    <p>
+        You have successfully registered on DevOlogy.
+        Please click on the following link to activate your account:
+    </p>
+    <p>
+        <a class=" btn btn-primary" href="{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}">
+        Click Here
+        </a>
+    </p>
+    <p>
+        If you have any questions, please 
+        <a href="mailto:mihirom105304@gmial.com">
+            Contact Us
+        </a>
+    </p>
+    <p>
+        Thanks,<br>
+        DevOlogy Team
+    </p>
+</div>
+</html>
 
 {% endautoescape %}
