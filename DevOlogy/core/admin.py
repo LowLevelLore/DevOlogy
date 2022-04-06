@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Link, Comment, PostLike, CommentLike, Follow, Bookmark, FollowRequest, PostList
+from .models import Post, Link, Comment, PostLike, CommentLike, Follow, Bookmark, FollowRequest, PostList, CommentList
 
 # Register your models here.
 
@@ -53,3 +53,4 @@ admin.site.register(Follow, FollowAdmin)
 admin.site.register(Bookmark, BookmarkAdmin)
 admin.site.register(FollowRequest, FollowRequestAdmin)
 admin.site.register(PostList)
+admin.site.register(CommentList)

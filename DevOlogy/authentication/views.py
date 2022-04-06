@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes, force_text
-from DevOlogy.settings import WEBSITE_NAME, WEBSITE_DOMAIN, EMAIL_HOST_USER
+from DevOlogy.settings import WEBSITE_NAME, EMAIL_HOST_USER
 from django.contrib.auth import authenticate, login, logout, get_user_model
 import json
 from django.contrib.auth import get_user_model
@@ -48,7 +48,7 @@ def password_reset_request(request):
             email_template_name = "text/password_reset_email.txt"
             c = {
                 "email": user.email,
-                "domain": WEBSITE_DOMAIN,
+                "domain": get_current_site.domain,
                 "site_name": f"{WEBSITE_NAME}",
                 "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                 "user": user,

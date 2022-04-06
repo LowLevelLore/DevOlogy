@@ -41,6 +41,11 @@ def get_post_list():
     print(json.dumps(response))
     return json.dumps(response)
 
+def get_comments_list(post):
+    comments = {}
+    for comment in list(Comment.objects.prefetch_related().filter(related_post=post)):
+        comments[comment.custom_id] = {'custom_id': comment.custom_id,'user_dp': comment.user_who_commented.get_dp_path, 'username': comment.user_who_commented.username, 'comment': comment.text, 'commented_on': str(comment.commented_on), 'was_liked_by_current_user': str(comment.was_liked_by_current_user).lower()}
+    return json.dumps(comments)
 
 def make_custom_string_as_id(instance):
     if instance == 'Post':
@@ -61,6 +66,8 @@ def make_custom_string_as_id(instance):
         instance = FollowRequest
     elif instance == "PostList":
         instance = PostList
+    elif instance == "CommentList":
+        instance = CommentList
     else:
         return None
 
@@ -294,7 +301,7 @@ class CommentLike(models.Model):
         if self.custom_id == '' or self.custom_id is None:
             self.custom_id = make_custom_string_as_id('CommentLike')
         try:
-            CommentLike.objects.prefetch_related().get(user_who_liked_the_comment= self.user_who_liked_the_comment)
+            CommentLike.objects.prefetch_related().get(user_who_liked_the_comment= self.user_who_liked_the_comment, comment=self.comment)
         
         except:
             super(CommentLike, self).save(*args, **kwargs)
@@ -377,4 +384,20 @@ class PostList(models.Model):
     
     def delete(self, *args, **kwargs):
         super(FollowRequest, self).delete(*args, **kwargs)
+
+class CommentList(models.Model):
+    custom_id = models.CharField(max_length=id_length, null=False, editable=False, blank=False, unique=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post')
+    updated_on = models.DateTimeField(auto_now_add=True)
+    comments_list = models.JSONField()
+
+    def save(self, *args, **kwargs):
+        self.comments_list = get_comments_list(self.post)
+        self.custom_id = make_custom_string_as_id("CommentList")
+        CommentList.objects.prefetch_related().filter(post=self.post).delete()
+        
+        super(CommentList, self).save(*args, **kwargs)
+    
+    def delete(self, *args, **kwargs):
+        super(CommentList, self).delete(*args, **kwargs)
 
