@@ -12,17 +12,14 @@ import glob
 id_length = 20
 
 
-
 def get_files(folder):
     return glob.glob(folder)
 
+
 def delete_folder(folder):
     files = get_files(folder+'/*')
-    print(files)
     for file in files:
-        print(file)
         if os.path.isdir(file):
-            print(file)
             delete_folder(file)
         else:
             os.remove(file)
@@ -32,12 +29,14 @@ def delete_folder(folder):
 def make_custom_user_id():
     satisfied = False
     while not satisfied:
-        custom_string = ''.join(random.choice(string.ascii_uppercase) for _ in range(id_length))
+        custom_string = ''.join(random.choice(
+            string.ascii_uppercase) for _ in range(id_length))
         check_list = list(User.objects.filter(custom_id=custom_string))
         if len(check_list) == 0:
             satisfied = True
 
     return custom_string
+
 
 def get_dp_path(instance, filename):
     return instance.get_dp_upload_path(filename)
@@ -88,12 +87,16 @@ class MyUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    custom_id = models.CharField(max_length=id_length, null=False, blank=False, editable=False, unique=True)
-    email = models.EmailField(max_length=240, null=False, blank=False, unique=True)
-    username = models.CharField(max_length=200, null=False, blank=False, unique=True)
+    custom_id = models.CharField(
+        max_length=id_length, null=False, blank=False, editable=False, unique=True)
+    email = models.EmailField(
+        max_length=240, null=False, blank=False, unique=True)
+    username = models.CharField(
+        max_length=200, null=False, blank=False, unique=True)
     full_name = models.CharField(max_length=300, null=False, blank=False)
-    display_picture = models.ImageField(upload_to=get_dp_path, null=True, blank=True)
-    bio = models.CharField(max_length=1000, default='', null=True, blank=True)
+    display_picture = models.ImageField(
+        upload_to=get_dp_path, null=True, blank=True)
+    bio = models.CharField(max_length=500, default='', null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -114,12 +117,10 @@ class User(AbstractBaseUser):
         except:
             pass  # when new photo then we do nothing, normal case
         super(User, self).save(*args, **kwargs)
-    
-    def delete(self,*args, **kwargs):
-        print('deleting')
+
+    def delete(self, *args, **kwargs):
         delete_folder(f'media/UserSpecific/{self.email}/')
         super(User, self).delete(*args, **kwargs)
-
 
     def get_dp_upload_path(self, filename):
         return f'UserSpecific/{self.email}/DisplayPicture/{str(datetime.datetime.now())}.webp'
@@ -146,12 +147,12 @@ class User(AbstractBaseUser):
     @property
     def get_bio_links(self):
         links = self.bioLinks.all()
-        return links
+        return list({'link': link.link, 'id':link.custom_id} for link in links)
 
     @property
     def get_user_posts(self):
         posts = self.users_posts.all()
-        return posts
+        return list(posts)
 
     @property
     def get_bio_links_length(self):
@@ -179,7 +180,8 @@ class User(AbstractBaseUser):
         USERS WHO FOLLOW THE PARTICULAR USER
         :return: USER OBJECTS
         """
-        followers = [x.user_who_followed for x in list(self.user_who_was_followed.all())]
+        followers = [x.user_who_followed for x in list(
+            self.user_who_was_followed.all())]
         return followers
 
     @property
@@ -188,7 +190,8 @@ class User(AbstractBaseUser):
         USERS WHOM THE PARTICULAR USER FOLLOWS
         :return: USER OBJECTS
         """
-        following = [x.user_who_was_followed for x in list(self.user_who_followed.all())]
+        following = [x.user_who_was_followed for x in list(
+            self.user_who_followed.all())]
         return following
 
     @cached_property
@@ -221,14 +224,18 @@ class User(AbstractBaseUser):
                     min_sugg.append(user_)
                     counter += 1
         if len(min_sugg) < 5:
-            min_sugg = [x for x in User.objects.prefetch_related().all()[:4] if (x not in following and x != self)]
+            min_sugg = [x for x in User.objects.prefetch_related(
+            ).all()[:4] if (x not in following and x != self)]
         return min_sugg
 
 
 class InactiveUser(models.Model):
-    custom_id = models.CharField(max_length=id_length, null=False, blank=False, editable=False, unique=True)
-    email = models.EmailField(max_length=240, null=False, blank=False, unique=False)
-    username = models.CharField(max_length=200, null=False, blank=False, unique=False)
+    custom_id = models.CharField(
+        max_length=id_length, null=False, blank=False, editable=False, unique=True)
+    email = models.EmailField(
+        max_length=240, null=False, blank=False, unique=False)
+    username = models.CharField(
+        max_length=200, null=False, blank=False, unique=False)
     full_name = models.CharField(max_length=300, null=False, blank=False)
     is_active = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'
@@ -242,5 +249,5 @@ class InactiveUser(models.Model):
             for match in try_to_match:
                 match.delete()
         if self.custom_id == '' or self.custom_id is None:
-                self.custom_id = make_custom_user_id()
+            self.custom_id = make_custom_user_id()
         super(InactiveUser, self).save(*args, **kwargs)

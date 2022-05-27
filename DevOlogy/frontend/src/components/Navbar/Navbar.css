@@ -31,6 +31,10 @@ nav {
 .icon{
   width: 100%
 }
+#dp-icon{
+  width: 25px;
+  height: 25px;
+}
 #srchResults{
   margin-left: 35%;
     width: 30%;

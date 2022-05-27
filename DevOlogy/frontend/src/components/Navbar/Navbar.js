@@ -38,7 +38,7 @@ export default class Navbar extends Component {
   }
   getSearchResults = async () => {
     syncFetchRequest({
-      path_: "/api/getSearchResults/",
+      path_: "/api/general/getSearchResults/",
       method: "POST",
       body: {
         query: this.state.searchValue,
@@ -53,7 +53,7 @@ export default class Navbar extends Component {
   };
   getRequestUserInfo = async () => {
     syncFetchRequest({
-      path_: "/api/getRequestUserInfo/",
+      path_: "/api/user/getRequestUserInfo/",
       method: "POST",
       next: (data)=>{
         this.setState({ requestUserData: data.response }, () => {
@@ -67,6 +67,12 @@ export default class Navbar extends Component {
   renderSearchResults = () => {};
   componentDidMount() {
     this.setState({ searchDiv: document.getElementById("srchResults") });
+    window.addEventListener("click", 
+    ()=>{
+      if (!this.state.isMouseInside) {
+        this.state.searchDiv.style.display = "none";
+      }
+    });
   }
   handleSearchOnChange = (e) => {
     if (document.getElementById("results").innerHTML === "") {
@@ -113,6 +119,8 @@ export default class Navbar extends Component {
               placeholder={this.state.searchPlaceholder}
               onFocus={this.handleSearchOnFocus}
               onBlur={this.handleSearchOnBlur}
+              onMouseLeave={() => this.setState({ isMouseInside: false })}
+            onMouseEnter={() => this.setState({ isMouseInside: true })}
             />
           </div>
           <div className="rightNav">
@@ -178,6 +186,7 @@ export default class Navbar extends Component {
               ) : (
                 <img
                   className="icon"
+                  id="dp-icon"
                   src={this.state.requestUserData.dp_url}
                   alt=""
                 />
@@ -201,7 +210,7 @@ export default class Navbar extends Component {
               ? Object.keys(this.state.searchResults).map((key) => (
                   <a
                     className="link"
-                    href={this.state.searchResults[key].link}
+                    href={"/profile" + this.state.searchResults[key].link + "/"}
                     key={this.state.searchResults[key].username}
                   >
                     <div className="rectangle row">

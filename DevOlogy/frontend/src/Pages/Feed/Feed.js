@@ -44,7 +44,7 @@ export default class Feed extends Component {
 
   getUserSuggestions = async () => {
     fetchRequest({
-      path_: "/api/getUserSuggestions/",
+      path_: "/api/user/getUserSuggestions/",
       method: "POST",
       next: (data) => {
         this.setState({ userSuggestions: data.response });
@@ -104,7 +104,7 @@ export default class Feed extends Component {
           <div className="suggestions">
             <div className="personalinfo row mt-4">
               <div className="col-4 flex-v-center">
-                <a href={"/" + this.state.requestUserData.username}>
+                <a href={"/profile/" + this.state.requestUserData.username}>
                   <img
                     className="main-dp sugg-user-icon"
                     src={this.state.requestUserData.dp_url}
@@ -118,7 +118,7 @@ export default class Feed extends Component {
                   style={{ fontSize: "15px", textAlign: "center" }}
                 >
                   <a
-                    href={"/" + this.state.requestUserData.username}
+                    href={"/profile/" + this.state.requestUserData.username}
                     className="link"
                   >
                     <b>{this.state.requestUserData.username}</b>
@@ -161,7 +161,7 @@ export default class Feed extends Component {
                     >
                       <div className="col-3">
                         <a
-                          href={"/" + this.state.userSuggestions[item].username}
+                          href={"/profile/" + this.state.userSuggestions[item].username}
                         >
                           <img
                             className="sugg-icon"
@@ -173,7 +173,7 @@ export default class Feed extends Component {
                       <div className="col-9 sugg-username">
                         <a
                           className="link"
-                          href={"/" + this.state.userSuggestions[item].username}
+                          href={"/profile/" + this.state.userSuggestions[item].username}
                         >
                           <b>{this.state.userSuggestions[item].username}</b>
                         </a>

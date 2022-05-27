@@ -1,0 +1,30 @@
+.mainDiv {
+  width: 32%;
+  height: 100%;
+}
+
+.post {
+  width: 100%;
+  height: fit-content;
+}
+
+.post > a {
+  height: fit-content;
+  width: 100%;
+}
+.post > a > img {
+  width: 100%;
+  height: auto;
+}
+
+.hover {
+  width: 100%;
+  position: relative;
+  left: 0;
+  color: white;
+  background-color: black;
+  opacity: 45%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

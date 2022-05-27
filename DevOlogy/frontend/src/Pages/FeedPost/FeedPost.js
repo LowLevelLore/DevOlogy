@@ -24,7 +24,7 @@ function FeedPost(props) {
   const [canToggleBookmark, setCanToggleBookmark] = useState(true)
   const getDetails = async () => {
     fetchRequest({
-      path_: "/api/knowPostLikesAndBookmarks/",
+      path_: "/api/post/knowPostLikesAndBookmarks/",
       method: "POST",
       body: { custom_id: props.postData.custom_id },
       next: (data) => {
@@ -54,7 +54,7 @@ function FeedPost(props) {
     if (!requestUserHasLiked && canToggleLike) {
       setCanToggleLike(false)
       fetchRequest({
-        path_: "/api/addLike/",
+        path_: "/api/post/addLike/",
         method: "POST",
         body: { custom_id: props.postData.custom_id },
         next: (data) => {
@@ -71,7 +71,7 @@ function FeedPost(props) {
     if (requestUserHasLiked && canToggleLike) {
       setCanToggleLike(false)
       fetchRequest({
-        path_: "/api/removeLike/",
+        path_: "/api/post/removeLike/",
         method: "POST",
         body: { custom_id: props.postData.custom_id },
         next: (data) => {
@@ -88,7 +88,7 @@ function FeedPost(props) {
     if (!requestUserHasBookmarked && canToggleBookmark) {
       setCanToggleBookmark(false)
       fetchRequest({
-        path_: "/api/addBookmark/",
+        path_: "/api/post/addBookmark/",
         method: "POST",
         body: { custom_id: props.postData.custom_id },
         next: (data) => {
@@ -104,7 +104,7 @@ function FeedPost(props) {
     if (requestUserHasBookmarked && canToggleBookmark) {
       setCanToggleBookmark(false)
       fetchRequest({
-        path_: "/api/removeBookmark/",
+        path_: "/api/post/removeBookmark/",
         method: "POST",
         body: { custom_id: props.postData.custom_id },
         next: (data) => {
@@ -123,7 +123,7 @@ function FeedPost(props) {
     <div className="post my-2">
       <div className="container-fluid post-head py-1">
         <div className="post-dp">
-          <a href={"/" + props.postData.username}>
+          <a href={"/profile/" + props.postData.username}>
             <img
               className="post-dp-img"
               src={props.postData.user_dp}
@@ -132,7 +132,7 @@ function FeedPost(props) {
           </a>
         </div>
         <div className="post-head-username mx-2 my-1">
-          <a className="link" href={"/" + props.postData.username}>
+          <a className="link" href={"/profile/" + props.postData.username}>
             {props.postData.username}
           </a>
         </div>
@@ -201,16 +201,16 @@ function FeedPost(props) {
             {timeDiff}
           </div>
         </div>
-        <div className="container-fluid">
+        <div className="container-fluid" style={{display: "flex", marginLeft: "5px"}}>
           <a
             style={{ fontSize: "15px", marginLeft: "3px" }}
             className="link"
-            href={"/" + props.postData.username}
+            href={"/profile/" + props.postData.username}
           >
             <b>{props.postData.username}</b>
           </a>
           <div
-            style={{ fontSize: "15px", marginLeft: "3px", marginBottom: "5px" }}
+            style={{ fontSize: "13px", marginLeft: "3px", marginBottom: "5px" }}
           >
             <ReactReadMoreReadLess
               charLimit={window.innerWidth > 700 ? 100 : 50}

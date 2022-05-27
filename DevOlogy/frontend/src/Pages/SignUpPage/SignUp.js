@@ -43,7 +43,7 @@ export default class SignUp extends Component {
       });
     } else {
       syncFetchRequest({
-        path_: "/api/isEmailAvailable/",
+        path_: "/api/auth/isEmailAvailable/",
         method: "POST",
         body: {
           email: this.state.email,
@@ -69,7 +69,7 @@ export default class SignUp extends Component {
       });
     } else {
       syncFetchRequest({
-        path_: "/api/isUserNameAvailable/",
+        path_: "/api/auth/isUserNameAvailable/",
         method: "POST",
         body: {
           username: this.state.username,

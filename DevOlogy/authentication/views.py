@@ -39,7 +39,6 @@ def log_out_view(request):
 def password_reset_request(request):
     if request.method == "POST":
         email = request.POST.get("email")
-        print(email)
 
         try:
             user = get_user_model().objects.get(email=email)
@@ -69,7 +68,6 @@ def password_reset_request(request):
                 return HttpResponse("Invalid header found.")
             return redirect("password_reset_done_view")
         except Exception as e:
-            print(e)
             password_reset_form = PasswordResetForm()
             return render(
                 request=request,
@@ -99,7 +97,6 @@ def login_view(request):
             except:
                 email = username_email
                 user = authenticate(email=email, password=password)
-                print(user)
             if user:
                 login(request, user)
                 isSuccessful = True
@@ -112,7 +109,6 @@ def login_view(request):
         else:
             return HttpResponse("Page Not Found")
     if request.method == "GET":
-        print("get")
         if request.user.is_authenticated:
             return redirect("/")
         else:

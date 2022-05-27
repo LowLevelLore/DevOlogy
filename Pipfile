@@ -8,7 +8,7 @@ django = "*"
 djangorestframework = "*"
 pillow = "*"
 djongo = "*"
-pymongo = "*"
+pymongo = "==3.12.3"
 dnspython = "*"
 django-crum = "*"
 django-currentuser = "*"
@@ -17,8 +17,11 @@ python-social-auth = "*"
 social-auth-app-django = "*"
 django-sslserver = "*"
 django-utils-six = "*"
+django-imagekit = "*"
+djando = "*"
 
 [dev-packages]
+autopep8 = "*"
 
 [requires]
 python_version = "3.9"

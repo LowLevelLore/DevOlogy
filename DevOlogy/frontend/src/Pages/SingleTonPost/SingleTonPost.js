@@ -10,6 +10,7 @@ import {
   faComment,
   faBookmark,
 } from "@fortawesome/free-regular-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import {
   faHeart as faHeartFilled,
   faBookmark as faBookmarkFilled,
@@ -23,29 +24,31 @@ function CommentLike(props) {
   const [commentLiked, setCommentLiked] = useState(props.commentLiked);
   const addCommentLike = () => {
     fetchRequest({
-      path_: "/api/addCommentLike/",
+      path_: "/api/post/addCommentLike/",
       method: "POST",
       body: { custom_id: commentId },
       next: (data) => {
-        console.log(data.response)
-        if (data.response === 'Liked'){
-        setCommentLiked("true");}
+        if (data.response === "Liked") {
+          setCommentLiked("true");
+        }
       },
     });
   };
   const removeCommentLike = (comment_id) => {
     fetchRequest({
-      path_: "/api/removeCommentLike/",
+      path_: "/api/post/removeCommentLike/",
       method: "POST",
       body: { custom_id: comment_id },
       next: (data) => {
-        if (data.response === 'Deleted'){
-        setCommentLiked("false");}
+        if (data.response === "Deleted") {
+          setCommentLiked("false");
+        }
       },
     });
   };
+
   return (
-    <div>
+    <div className="comment____" id={`comment___${commentId}`}>
       {commentLiked === "true" ? (
         <FontAwesomeIcon
           onClick={() => {
@@ -80,7 +83,7 @@ function SingleTonPost() {
   const [comments, setComments] = useState([]);
   const [totalComments, setTotalComments] = useState(0);
   const [commentPage, setCommentPage] = useState(0);
-  const [hasMoreComments, setHasMoreComments] = useState(true);
+  const [hasMoreComments, setHasMoreComments] = useState(false);
   const [comment, setComment] = useState("");
   const [timeDiff, setTimeDiff] = useState("");
   const [likes, setLikes] = useState(0);
@@ -106,9 +109,9 @@ function SingleTonPost() {
   const addLike = async () => {
     if (!requestUserHasLiked) {
       fetchRequest({
-        path_: "/api/addLike/",
+        path_: "/api/post/addLike/",
         method: "POST",
-        body: { custom_id: props.postData.custom_id },
+        body: { custom_id: postId },
         next: (data) => {
           if (data.response === "Liked") {
             setRequestUserHasLiked(true);
@@ -121,9 +124,9 @@ function SingleTonPost() {
   const removeLike = async () => {
     if (requestUserHasLiked) {
       fetchRequest({
-        path_: "/api/removeLike/",
+        path_: "/api/post/removeLike/",
         method: "POST",
-        body: { custom_id: props.postData.custom_id },
+        body: { custom_id: postId },
         next: (data) => {
           if (data.response === "Like Removed") {
             setRequestUserHasLiked(false);
@@ -136,9 +139,9 @@ function SingleTonPost() {
   const addBookmark = async () => {
     if (!requestUserHasBookmarked) {
       fetchRequest({
-        path_: "/api/addBookmark/",
+        path_: "/api/post/addBookmark/",
         method: "POST",
-        body: { custom_id: props.postData.custom_id },
+        body: { custom_id: postId },
         next: (data) => {
           if (data.response === "Bookmarked") {
             setRequestUserHasBookmarked(true);
@@ -150,9 +153,9 @@ function SingleTonPost() {
   const removeBookmark = async () => {
     if (requestUserHasBookmarked) {
       fetchRequest({
-        path_: "/api/removeBookmark/",
+        path_: "/api/post/removeBookmark/",
         method: "POST",
-        body: { custom_id: props.postData.custom_id },
+        body: { custom_id: postId },
         next: (data) => {
           if (data.response === "Bookmark Removed") {
             setRequestUserHasBookmarked(false);
@@ -171,14 +174,13 @@ function SingleTonPost() {
 
   const commentFunction = () => {
     fetchRequest({
-      path_: "/api/comment/",
+      path_: "/api/post/comment/",
       method: "POST",
       body: {
         custom_id: postId,
         comment_text: comment,
       },
       next: (data) => {
-        console.log(data.data);
         if (data.response != "No Post") {
           setComment("");
           for (const key in data.data) {
@@ -200,15 +202,16 @@ function SingleTonPost() {
 
   const getComments = () => {
     fetchRequest({
-      path_: "/api/getComments/",
+      path_: "/api/post/getComments/",
       method: "POST",
       body: { post_id: postId, page: commentPage },
       next: (data) => {
-        if (data.status != 404) {
-          console.log(data);
+        if (data.response == "Successful") {
           setTotalComments(data.total);
           if (!data.has_more) {
             setHasMoreComments(false);
+          } else {
+            setHasMoreComments(true);
           }
           setCommentPage(commentPage + 1);
           if (commentPage == 0) {
@@ -219,9 +222,10 @@ function SingleTonPost() {
               "fast"
             );
           }
-          for (const key in data.response) {
-            if (Object.hasOwnProperty.call(data.response, key)) {
-              const comment = data.response[key];
+
+          for (const key in data.data) {
+            if (Object.hasOwnProperty.call(data.data, key)) {
+              const comment = data.data[key];
               setComments((comments) => [...comments, comment]);
             }
           }
@@ -233,11 +237,10 @@ function SingleTonPost() {
   const getPostData = () => {
     setLoading(true);
     syncFetchRequest({
-      path_: "/api/getPostData/",
+      path_: "/api/post/getPostData/",
       method: "POST",
       body: { custom_id: postId },
       next: (data) => {
-        console.log(data.response);
         setLikes(data.response.likes);
         setPostImage(data.response.post_image);
         setTimeDiff(data.response.time_diff);
@@ -248,6 +251,28 @@ function SingleTonPost() {
         setLoading(false);
       },
     });
+  };
+
+  const showDeleteComment = (comment) => {
+    return comment.username === postUserData.username;
+  };
+  const deleteComment = (comment) => {
+    if (comment.username === postUserData.username) {
+      fetchRequest({
+        path_: "/api/post/deleteComment/",
+        method: "POST",
+        body: {
+          custom_id: comment.custom_id,
+        },
+        next: (data) => {
+          if (data.response === "Deleted") {
+            setComments((comments) =>
+              comments.filter((c) => c.custom_id !== comment.custom_id)
+            );
+          }
+        },
+      });
+    }
   };
 
   useEffect(() => {
@@ -288,7 +313,7 @@ function SingleTonPost() {
             </div>
             <div className="sp__right">
               <div className="header container-fluid d-flex p-2 align-items-center ">
-                <a href={"/" + postUserData.username + "/"}>
+                <a href={"/profile/" + postUserData.username + "/"}>
                   <img
                     className="post-dp-img"
                     src={postUserData.dp_url}
@@ -297,7 +322,7 @@ function SingleTonPost() {
                 </a>
 
                 <a
-                  href={"/" + postUserData.username + "/"}
+                  href={"/profile/" + postUserData.username + "/"}
                   className="link"
                   style={{ marginLeft: "7px" }}
                 >
@@ -321,7 +346,7 @@ function SingleTonPost() {
                       <div className="cic-left">
                         <a
                           className="cmt-user-dp-link"
-                          href={`/${comment.username}/`}
+                          href={`/profile/${comment.username}/`}
                         >
                           <img
                             className="cmt-user-dp"
@@ -331,16 +356,40 @@ function SingleTonPost() {
                         </a>
                       </div>
                       <div className="cic-right">
-                        <div id={comment.custom_id + "--<>--"}>
-                          <div className="cmt-username">
+                        <div
+                          id={comment.custom_id + "--<>--"}
+                          style={{ fontSize: "small" }}
+                        >
+                          <div
+                            className="cmt-username"
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
                             <a
-                              href={`/${comment.username}/`}
+                              href={`/profile/${comment.username}/`}
                               style={{ textDecoration: "none" }}
                             >
                               <p className="cmt-username-link">
                                 {comment.username}
                               </p>
                             </a>
+                            <div className="delete-comment-icon">
+                              {showDeleteComment(comment) ? (
+                                <FontAwesomeIcon
+                                  onClick={() => {
+                                    deleteComment(comment);
+                                  }}
+                                  icon={faTrash}
+                                  size="xs"
+                                  style={{ marginLeft: "4px" }}
+                                />
+                              ) : (
+                                <></>
+                              )}
+                            </div>
                           </div>
                           <ReactReadMoreReadLess
                             readMoreText={"Read More"}
