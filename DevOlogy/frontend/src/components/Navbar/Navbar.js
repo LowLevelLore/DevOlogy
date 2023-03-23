@@ -1,15 +1,10 @@
-import React, { Component } from "react";
-import "./Navbar.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faHome,
-  faComments,
-  faCompass,
-  faHeart,
-  faUser,
-  faPlus,
+  faComments, faHome, faPlus, faUser
 } from "@fortawesome/free-solid-svg-icons";
-import { syncFetchRequest, fetchRequest } from "../../../helpers/fetchRequest";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { Component } from "react";
+import { syncFetchRequest } from "../../../helpers/fetchRequest";
+import "./Navbar.css";
 
 const searchInputPlaceholder = "Search";
 
